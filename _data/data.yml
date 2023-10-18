@@ -24,7 +24,7 @@ sidebar:
     telegram: # add your nickname without '@' sign
     gitlab:
     bitbucket:
-    twitter: '@kegdeveops'
+    twitter: '@kegdevelops'
     stack-overflow: # Number/Username, e.g. 123456/alandoe
     codewars:
     goodreads: # Number-Username, e.g. 123456-alandoe
@@ -122,7 +122,7 @@ certifications:
           credentialurl: https://www.credly.com/badges/45da28f1-7eb4-4c69-9229-d578d5d60ffb/public_url
           credentialname: Adobe Certified Expert-Adobe Commerce Front-End Developer
           details: |
-            Achievced and maintain the Adobe Certified Expert version of the Front-End Developer certification.
+            Achieved and maintain the Adobe Certified Expert version of the Front-End Developer certification.
 
 # projects:
 #     title: Projects
