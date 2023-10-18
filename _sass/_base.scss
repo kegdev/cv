@@ -278,6 +278,8 @@ p {
     line-height: 1.6;
     color: $text-color-secondary;
     font-size: 13px;
+    position: absolute;
+    left: -9999px;
   }
 
   .fa-heart {
