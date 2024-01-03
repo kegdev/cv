@@ -57,7 +57,7 @@ sidebar:
 career-profile:
     title: Career Profile
     summary: |
-      Hi Y'all! 👋 I'm a diligent and communicative senior web developer specializing in the Adobe Commerce platform. Locked and loaded with soft skills to match technical skills, with experience in work scenarios ranging from client-facing project leadership all the way to quality assurance. 
+      Hi Y'all! 👋 I'm a dedicated certified developer who specializes in technical leadership and development on various e-commerce platforms, including Adobe Commerce, BigCommerce and Shopify. I also have C# development experience as an active skill My current day to day includes developer oversight, active development, and client-facing technical project management. I'm very driven and detail-oriented, with over five years of previous experience in QA.
 education:
     title: Education
     info:
@@ -123,6 +123,24 @@ certifications:
           credentialname: Adobe Certified Expert-Adobe Commerce Front-End Developer
           details: |
             Achieved and maintain the Adobe Certified Expert version of the Front-End Developer certification.
+        - name: BigCommerce App Builder Certification
+          start: 2023
+          end: 
+          organization: BigCommerce
+          credentialid: C706
+          credentialurl: https://www.bigcommerce.com/blog/bigdev-certification/
+          credentialname: BigCommerce App Builder Certification
+          details: |
+            Achieved the BigCommerce App Builder Certification.
+        - name: BigCommerce BigDev Certification
+          start: 2023
+          end: 
+          organization: BigCommerce
+          credentialid: C709
+          credentialurl: https://www.bigcommerce.com/blog/bigdev-certification/
+          credentialname: BigCommerce BigDev Certification
+          details: |
+            Achieved the BigCommerce BigDev Certification.
 
 # projects:
 #     title: Projects
