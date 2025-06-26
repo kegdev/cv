@@ -233,11 +233,17 @@ skills:
       - name: SCSS/LESS/CSS
         level: 90%
 
-      - name: Magento 1.x
-        level: 90%
+      - name: C#/.Net/Razor/MVC
+        level: 60%
 
       - name: Magento 2.x
         level: 80%
+
+      - name: BigCommerce FE/BE
+        level: 70%
+
+      - name: Znode FE/BE
+        level: 50%
 
       - name: Leadership
         level: 80%
