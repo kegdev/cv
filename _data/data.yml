@@ -118,7 +118,7 @@ experiences:
 certifications:
       title: Certifications
       list:
-          - name: Znode Product Certification
+        - name: Znode Product Certification
           start: 2025
           end: 
           organization: Amla Commerce Academy
@@ -126,7 +126,7 @@ certifications:
           credentialurl: https://www.credential.net/1c44e80c-1065-4947-95b9-cf08ec4dbd06
           credentialname: Znode Product Certification
           details: |
-            Achieved and maintain the zNode Product Certification
+            Achieved and maintain the Znode Product Certification.
         - name: Adobe Certified Expert-Adobe Commerce Front-End Developer
           start: 2021
           end: 
