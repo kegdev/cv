@@ -74,8 +74,13 @@ education:
 experiences:
     title: Experience
     info:
+      - role: Development Manager
+        time: March 2025 - Present
+        company: Human Element - Ann Arbor, Michigan (remote)
+        details: |
+          As a Development Manager at Human Element, I serve as a hybrid leader, combining active software development with strategic team management. I contribute directly to client projects as a senior developer, handling code reviews, releases, and maintaining technical certifications. My role also involves significant human resource administration, including time management, performance assessment, and fostering employee engagement. I actively shape the technical vision of our development teams, ensuring alignment with company goals and client needs. I lead training initiatives, drive employee development, and participate in hiring and onboarding new talent. Furthermore, I champion process improvements, foster a culture of collaboration and knowledge sharing, and engage in innovating new e-commerce technologies to keep Human Element at the forefront of the industry.
       - role: Technical Lead
-        time: October 2020 - Present
+        time: October 2020 - March 2025
         company: Human Element - Ann Arbor, Michigan (remote)
         details: |
           Primary Technical Lead with oversight and execution responsibilities of dozens of different projects on teams ranging from two to ten developers, along with accompanying project management, SEO and design resources. Experienced with deep dives into challenging integrations, complex front-end designs, as well as challenging clients.
@@ -113,6 +118,15 @@ experiences:
 certifications:
       title: Certifications
       list:
+          - name: Znode Product Certification
+          start: 2025
+          end: 
+          organization: Amla Commerce Academy
+          credentialid: 1c44e80c-1065-4947-95b9-cf08ec4dbd06
+          credentialurl: https://www.credential.net/1c44e80c-1065-4947-95b9-cf08ec4dbd06
+          credentialname: Znode Product Certification
+          details: |
+            Achieved and maintain the zNode Product Certification
         - name: Adobe Certified Expert-Adobe Commerce Front-End Developer
           start: 2021
           end: 
