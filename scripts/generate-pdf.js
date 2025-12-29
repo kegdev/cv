@@ -75,9 +75,25 @@ async function generatePDF() {
     
     console.log('✅ Page loaded with status:', response.status());
     
-    // Wait for page to fully load including CSS
-    console.log('⏳ Waiting for page content and styles to load...');
-    await page.waitForTimeout(8000); // Increased wait time for CSS
+    // Wait for images to load
+    console.log('🖼️ Waiting for images to load...');
+    await page.waitForFunction(() => {
+      const images = Array.from(document.querySelectorAll('img'));
+      return images.every(img => img.complete);
+    }, { timeout: 10000 }).catch(() => {
+      console.log('⚠️ Some images may not have loaded completely');
+    });
+    
+    // Check if profile image loaded
+    const profileImageStatus = await page.evaluate(() => {
+      const avatar = document.querySelector('.avatar');
+      if (!avatar) return 'No avatar element found';
+      if (!avatar.src) return 'No src attribute';
+      if (!avatar.complete) return 'Image not loaded';
+      if (avatar.naturalWidth === 0) return 'Image failed to load';
+      return `Image loaded: ${avatar.naturalWidth}x${avatar.naturalHeight}`;
+    });
+    console.log('👤 Profile image status:', profileImageStatus);
     
     // Check if CSS is loaded by looking for styled elements
     const hasStyles = await page.evaluate(() => {
@@ -105,8 +121,8 @@ async function generatePDF() {
       console.log('📄 Stylesheets found:', JSON.stringify(stylesheets, null, 2));
     }
     
-    // Inject PDF-optimized styles with correct theme colors
-    console.log('🎨 Injecting comprehensive PDF styles with ceramic theme...');
+    // Inject PDF-optimized styles with correct theme colors and fixes
+    console.log('🎨 Injecting comprehensive PDF styles with ceramic theme and layout fixes...');
     await page.addStyleTag({
       content: `
         /* Ceramic theme variables */
@@ -124,7 +140,7 @@ async function generatePDF() {
           color: var(--text-color-secondary) !important;
           background: var(--smoky-white) !important;
           font-size: 14px !important;
-          padding: 0 !important;
+          padding: 30px !important;
           margin: 0 !important;
           -webkit-font-smoothing: antialiased !important;
           -moz-osx-font-smoothing: grayscale !important;
@@ -136,28 +152,45 @@ async function generatePDF() {
           grid-template-columns: repeat(10, 1fr) !important;
           background: var(--theme-color) !important;
           max-width: 1000px !important;
-          margin: 20px auto !important;
+          margin: 0 auto !important;
           position: relative !important;
           box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1) !important;
         }
         
-        /* Sidebar */
+        /* Sidebar - Fixed positioning and styling */
         .sidebar-wrapper {
           grid-column: span 3 !important;
           order: 1 !important;
           background: var(--theme-color) !important;
           color: #fff !important;
+          position: static !important;
+          float: none !important;
         }
         
         .sidebar-wrapper a {
           color: #fff !important;
         }
         
+        /* Profile container - Fixed spacing */
         .profile-container {
           padding: 30px !important;
           background: rgba(0, 0, 0, 0.2) !important;
           text-align: center !important;
           color: #fff !important;
+          margin-bottom: 0 !important;
+        }
+        
+        /* Profile image - Ensure it displays */
+        .avatar {
+          max-width: 100px !important;
+          width: 100px !important;
+          height: 100px !important;
+          margin: 0 auto 15px auto !important;
+          border: 0px solid #fff !important;
+          border-radius: 100% !important;
+          box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1) !important;
+          display: block !important;
+          object-fit: cover !important;
         }
         
         .name {
@@ -169,19 +202,18 @@ async function generatePDF() {
         }
         
         .tagline {
-          color: rgba(256, 256, 256, 0.6) !important;
+          color: rgba(255, 255, 255, 0.6) !important;
           font-size: 16px !important;
           font-weight: 400 !important;
           margin-top: 0 !important;
           margin-bottom: 0 !important;
         }
         
-        .avatar {
-          max-width: 100px !important;
-          margin-bottom: 15px !important;
-          border: 0px solid #fff !important;
-          border-radius: 100% !important;
-          box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1) !important;
+        /* Contact and other sidebar sections */
+        .contact-list {
+          list-style: none !important;
+          padding: 0 !important;
+          margin-bottom: 0 !important;
         }
         
         .contact-list .fas,
@@ -190,6 +222,7 @@ async function generatePDF() {
           margin-right: 5px !important;
           font-size: 18px !important;
           vertical-align: middle !important;
+          color: #fff !important;
         }
         
         .contact-list li {
@@ -214,6 +247,7 @@ async function generatePDF() {
           color: #fff !important;
         }
         
+        /* Education section in sidebar */
         .education-container .item {
           margin-bottom: 15px !important;
         }
@@ -222,29 +256,52 @@ async function generatePDF() {
           margin-bottom: 0 !important;
         }
         
+        .education-container .degree {
+          font-size: 14px !important;
+          margin-top: 0 !important;
+          margin-bottom: 5px !important;
+          color: #fff !important;
+        }
+        
         .education-container .meta {
-          color: rgba(256, 256, 256, 0.6) !important;
+          color: rgba(255, 255, 255, 0.6) !important;
           font-weight: 500 !important;
           margin-bottom: 0px !important;
           margin-top: 0 !important;
         }
         
         .education-container .time {
-          color: rgba(256, 256, 256, 0.6) !important;
+          color: rgba(255, 255, 255, 0.6) !important;
           font-weight: 500 !important;
           margin-bottom: 0px !important;
         }
         
+        /* Languages section */
         .languages-container .lang-desc {
-          color: rgba(256, 256, 256, 0.6) !important;
+          color: rgba(255, 255, 255, 0.6) !important;
         }
         
-        /* Main content */
+        .languages-list {
+          margin-bottom: 0 !important;
+        }
+        
+        .languages-list li {
+          margin-bottom: 10px !important;
+          color: #fff !important;
+        }
+        
+        .languages-list li:last-child {
+          margin-bottom: 0 !important;
+        }
+        
+        /* Main content - Fixed alignment */
         .main-wrapper {
           grid-column: span 7 !important;
           order: 2 !important;
           background: #fff !important;
           padding: 60px !important;
+          margin: 0 !important;
+          position: static !important;
         }
         
         .section-title {
@@ -261,6 +318,11 @@ async function generatePDF() {
           margin-bottom: 60px !important;
         }
         
+        .section:last-child {
+          margin-bottom: 0 !important;
+        }
+        
+        /* Experience and education items */
         .experiences-section .item,
         .educations-section .item {
           margin-bottom: 30px !important;
@@ -301,6 +363,12 @@ async function generatePDF() {
           color: var(--text-grey) !important;
         }
         
+        .details {
+          margin-top: 5px !important;
+          color: var(--text-color-secondary) !important;
+          line-height: 1.5 !important;
+        }
+        
         /* Skills section */
         .skillset .item {
           margin-bottom: 15px !important;
@@ -311,6 +379,7 @@ async function generatePDF() {
           font-size: 14px !important;
           margin-top: 0 !important;
           margin-bottom: 12px !important;
+          color: var(--text-color) !important;
         }
         
         .skillset .level-bar {
@@ -325,7 +394,7 @@ async function generatePDF() {
         
         /* Certifications */
         .certifications-section .item {
-          margin-bottom: 20px !important;
+          margin-bottom: 30px !important;
         }
         
         /* Typography */
@@ -335,6 +404,7 @@ async function generatePDF() {
         
         p {
           line-height: 1.5 !important;
+          margin-bottom: 15px !important;
         }
         
         /* Links */
@@ -360,6 +430,12 @@ async function generatePDF() {
         
         .item {
           page-break-inside: avoid;
+        }
+        
+        /* Force image loading */
+        img {
+          max-width: 100% !important;
+          height: auto !important;
         }
       `
     });
