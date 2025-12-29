@@ -26,131 +26,247 @@ jobs:
         
     - name: Build Jekyll site
       run: |
-        bundle exec jekyll build --destination _site
+        echo "🔨 Building Jekyll site..."
+        bundle exec jekyll build --destination _site --verbose
         
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
+        echo "✅ Jekyll build completed"
+        echo "📁 Checking _site directory structure:"
+        if [ -d "_site" ]; then
+          find _site -type f -name "*.html" | head -20
+          echo "📊 Total HTML files: $(find _site -name "*.html" | wc -l)"
+        else
+          echo "❌ ERROR: _site directory was not created!"
+          exit 1
+        fi
         
-    - name: Install Puppeteer
+    - name: Verify print page exists
       run: |
-        npm install puppeteer
+        echo "🔍 Looking for print page..."
         
-    - name: Create PDF generation script
+        PRINT_FOUND=false
+        PRINT_PATH=""
+        
+        # Check for print/index.html
+        if [ -f "_site/print/index.html" ]; then
+          echo "✅ Found print page at: _site/print/index.html"
+          PRINT_FOUND=true
+          PRINT_PATH="_site/print/index.html"
+        fi
+        
+        # Check for print.html
+        if [ -f "_site/print.html" ]; then
+          echo "✅ Found print page at: _site/print.html"
+          PRINT_FOUND=true
+          PRINT_PATH="_site/print.html"
+        fi
+        
+        if [ "$PRINT_FOUND" = false ]; then
+          echo "❌ ERROR: Print page not found!"
+          echo "📁 Available files in _site:"
+          ls -la _site/ || echo "Cannot list _site directory"
+          echo "📁 Looking for any print-related files:"
+          find _site -name "*print*" -type f || echo "No print-related files found"
+          exit 1
+        fi
+        
+        echo "PRINT_PATH=$PRINT_PATH" >> $GITHUB_ENV
+        
+    - name: Generate PDF using playwright
       run: |
+        echo "🎭 Starting PDF generation with Playwright..."
+        
+        # Install playwright
+        npm install playwright
+        
+        # Create PDF generation script with extensive logging
         cat > generate-pdf.js << 'EOF'
-        const puppeteer = require('puppeteer');
+        const { chromium } = require('playwright');
         const fs = require('fs');
         const path = require('path');
         
-        (async () => {
+        async function generatePDF() {
+          let browser;
+          let context;
+          let page;
+          
           try {
-            console.log('Starting PDF generation...');
+            console.log('🚀 Starting PDF generation process...');
             
-            const browser = await puppeteer.launch({
-              headless: 'new',
-              args: [
-                '--no-sandbox', 
-                '--disable-setuid-sandbox',
-                '--disable-dev-shm-usage',
-                '--disable-gpu'
-              ]
+            // Launch browser
+            console.log('🌐 Launching Chromium browser...');
+            browser = await chromium.launch({
+              headless: true,
+              args: ['--no-sandbox', '--disable-setuid-sandbox']
             });
+            console.log('✅ Browser launched successfully');
             
-            const page = await browser.newPage();
+            // Create context and page
+            console.log('📄 Creating browser context and page...');
+            context = await browser.newContext({
+              viewport: { width: 1200, height: 800 }
+            });
+            page = await context.newPage();
+            console.log('✅ Page created successfully');
             
-            // Set viewport for consistent rendering
-            await page.setViewport({ width: 1200, height: 800 });
-            
-            // Check possible print page locations
-            const possiblePaths = [
-              '_site/print/index.html',
-              '_site/print.html'
-            ];
-            
-            let printPath = null;
-            for (const testPath of possiblePaths) {
-              const fullPath = path.resolve(testPath);
-              console.log('Checking for print page at:', fullPath);
-              if (fs.existsSync(fullPath)) {
-                printPath = fullPath;
-                break;
-              }
-            }
-            
+            // Find print file
+            const printPath = process.env.PRINT_PATH;
             if (!printPath) {
-              console.log('Available files in _site:');
-              if (fs.existsSync('_site')) {
-                fs.readdirSync('_site').forEach(file => {
-                  console.log('  -', file);
-                });
-              }
-              throw new Error('Print page not found in any expected location');
+              throw new Error('PRINT_PATH environment variable not set');
             }
             
-            console.log('Loading print page from:', printPath);
+            const fullPath = path.resolve(printPath);
+            console.log(`📂 Print file path: ${fullPath}`);
             
-            await page.goto('file://' + printPath, {
-              waitUntil: 'networkidle0',
-              timeout: 30000
+            if (!fs.existsSync(fullPath)) {
+              throw new Error(`Print file does not exist: ${fullPath}`);
+            }
+            
+            const fileStats = fs.statSync(fullPath);
+            console.log(`📊 Print file size: ${fileStats.size} bytes`);
+            
+            // Load the page
+            const fileUrl = `file://${fullPath}`;
+            console.log(`🔗 Loading URL: ${fileUrl}`);
+            
+            const response = await page.goto(fileUrl, {
+              waitUntil: 'networkidle',
+              timeout: 60000
             });
             
-            // Wait a bit more for fonts and styles to load
-            await page.waitForTimeout(2000);
+            if (!response) {
+              throw new Error('Failed to load page - no response received');
+            }
             
-            console.log('Generating PDF...');
+            console.log(`✅ Page loaded with status: ${response.status()}`);
             
-            // Generate PDF with optimized settings
+            // Wait for content to load
+            console.log('⏳ Waiting for page content to fully load...');
+            await page.waitForTimeout(3000);
+            
+            // Check if page has content
+            const bodyContent = await page.textContent('body');
+            if (!bodyContent || bodyContent.trim().length === 0) {
+              throw new Error('Page appears to be empty - no body content found');
+            }
+            console.log(`📝 Page content length: ${bodyContent.length} characters`);
+            
+            // Generate PDF
+            console.log('📄 Generating PDF...');
             const pdf = await page.pdf({
               format: 'A4',
               printBackground: true,
-              preferCSSPageSize: false,
-              margin: {
-                top: '0.5in',
-                right: '0.5in',
-                bottom: '0.5in',
-                left: '0.5in'
+              margin: { 
+                top: '0.5in', 
+                right: '0.5in', 
+                bottom: '0.5in', 
+                left: '0.5in' 
               }
             });
+            console.log(`✅ PDF generated, size: ${pdf.length} bytes`);
             
-            // Ensure assets/pdf directory exists
-            const pdfDir = 'assets/pdf';
-            if (!fs.existsSync(pdfDir)) {
-              fs.mkdirSync(pdfDir, { recursive: true });
+            // Ensure output directory exists
+            const outputDir = 'assets/pdf';
+            if (!fs.existsSync(outputDir)) {
+              console.log(`📁 Creating directory: ${outputDir}`);
+              fs.mkdirSync(outputDir, { recursive: true });
             }
             
-            // Remove existing PDF if it exists
-            const pdfPath = 'assets/pdf/cv-keg-dev-print.pdf';
-            if (fs.existsSync(pdfPath)) {
-              fs.unlinkSync(pdfPath);
-              console.log('Removed existing PDF');
-            }
+            // Save PDF
+            const outputPath = 'assets/pdf/cv-keg-dev-print.pdf';
+            console.log(`💾 Saving PDF to: ${outputPath}`);
+            fs.writeFileSync(outputPath, pdf);
             
-            // Save new PDF
-            fs.writeFileSync(pdfPath, pdf);
-            console.log('PDF generated successfully at:', pdfPath);
-            
-            // Log file size
-            const stats = fs.statSync(pdfPath);
-            console.log('PDF file size:', Math.round(stats.size / 1024), 'KB');
-            
-            await browser.close();
+            const savedStats = fs.statSync(outputPath);
+            console.log(`✅ PDF saved successfully: ${Math.round(savedStats.size / 1024)} KB`);
             
           } catch (error) {
-            console.error('PDF generation failed:', error);
+            console.error('❌ PDF generation failed:');
+            console.error(`Error type: ${error.constructor.name}`);
+            console.error(`Error message: ${error.message}`);
+            if (error.stack) {
+              console.error(`Stack trace: ${error.stack}`);
+            }
+            
+            // Additional debugging info
+            if (page) {
+              try {
+                const url = page.url();
+                console.error(`Current page URL: ${url}`);
+                
+                const title = await page.title();
+                console.error(`Page title: ${title}`);
+                
+                const content = await page.content();
+                console.error(`Page HTML length: ${content.length}`);
+                console.error(`Page HTML preview: ${content.substring(0, 500)}...`);
+              } catch (debugError) {
+                console.error(`Failed to get debug info: ${debugError.message}`);
+              }
+            }
+            
             process.exit(1);
+          } finally {
+            // Cleanup
+            if (page) {
+              console.log('🧹 Closing page...');
+              await page.close().catch(e => console.error('Error closing page:', e.message));
+            }
+            if (context) {
+              console.log('🧹 Closing context...');
+              await context.close().catch(e => console.error('Error closing context:', e.message));
+            }
+            if (browser) {
+              console.log('🧹 Closing browser...');
+              await browser.close().catch(e => console.error('Error closing browser:', e.message));
+            }
           }
-        })();
+        }
+        
+        generatePDF();
         EOF
         
-    - name: Generate PDF
-      run: node generate-pdf.js
+        # Run the PDF generation
+        node generate-pdf.js
+        
+    - name: Verify PDF was created
+      run: |
+        echo "🔍 Verifying PDF creation..."
+        
+        if [ -f "assets/pdf/cv-keg-dev-print.pdf" ]; then
+          PDF_SIZE=$(stat -c%s "assets/pdf/cv-keg-dev-print.pdf")
+          echo "✅ PDF created successfully!"
+          echo "📊 PDF file size: $PDF_SIZE bytes ($(($PDF_SIZE / 1024)) KB)"
+          
+          if [ $PDF_SIZE -lt 1000 ]; then
+            echo "⚠️  WARNING: PDF file seems very small, might be corrupted"
+          fi
+        else
+          echo "❌ ERROR: PDF file was not created!"
+          echo "📁 Contents of assets/pdf directory:"
+          ls -la assets/pdf/ || echo "assets/pdf directory does not exist"
+          exit 1
+        fi
         
     - name: Commit and push updated PDF
       run: |
+        echo "📤 Committing and pushing PDF..."
+        
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
+        
+        # Check if there are changes to commit
+        if git diff --quiet assets/pdf/cv-keg-dev-print.pdf; then
+          echo "ℹ️  No changes detected in PDF file"
+        else
+          echo "📝 Changes detected in PDF file"
+        fi
+        
         git add assets/pdf/cv-keg-dev-print.pdf
-        git commit -m "🤖 Auto-update CV PDF [skip ci]" || echo "No changes to commit"
-        git push
+        
+        if git commit -m "🤖 Auto-update CV PDF [skip ci]"; then
+          echo "✅ PDF committed successfully"
+          git push
+          echo "✅ Changes pushed to repository"
+        else
+          echo "ℹ️  No changes to commit"
+        fi
