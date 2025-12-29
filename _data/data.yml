@@ -88,17 +88,12 @@ experiences:
         time: August 2020 - October 2020
         company: Human Element - Ann Arbor, Michigan (remote)
         details: |
-          Joined the Human Element team as a Senior Web Developer with experience in front-end and back-end Adobe Commerce development.
-      - role: Web Development Team Lead
-        time: April 2019 - Aug 2020
-        company: EBSCO Industries, Inc. - Birmingham, AL
-        details: |
-          Facilitates team activities while mentoring web developers and handling a healthy work load of projects. Primarily Wordpress, Magento 1.x/2.x, PWA development in addition to qualifications of previous positions.
+          Joined the Human Element team as a Senior Web Developer with experience in front-end and back-end Adobe Commerce development. Promoted to Technical Lead within 3 months.
       - role: Web Development Team Lead
         time: April 2019 - August 2020
         company: EBSCO Industries, Inc. - Birmingham, AL
         details: |
-          Facilitates team activities while mentoring web developers and handling a healthy work load of projects. Primarily Wordpress, Magento 1.x/2.x, PWA development in addition to qualifications of previous positions.
+          Facilitates team activities while mentoring web developers while managing a portfolio of 6 simultaneous client projects, maintaining a 95% on-time delivery rate. Primarily Wordpress, Magento 1.x/2.x, PWA development in addition to qualifications of previous positions.
       - role: Senior Magento PHP Developer
         time: April 2016 - April 2019
         company: EBSCO Industries, Inc. - Birmingham, AL
@@ -227,14 +222,14 @@ skills:
     title: Skills &amp; Proficiency
 
     toolset:
-      - name: PHP
+      - name: PHP (Laravel, Sympony)
         level: 85%
 
       - name: SCSS/LESS/CSS
         level: 90%
 
-      - name: C#/.Net/Razor/MVC
-        level: 60%
+      - name: C#/.Net Core/Razor/MVC
+        level: 75%
 
       - name: Magento 2.x
         level: 80%
@@ -244,6 +239,12 @@ skills:
 
       - name: Znode FE/BE
         level: 50%
+
+      - name: AWS, Docker
+        level: 80%
+
+      - name: AI Architecting and Support (Kiro)
+        level: 80%
 
       - name: Leadership
         level: 80%
