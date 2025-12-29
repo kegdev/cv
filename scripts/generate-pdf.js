@@ -105,41 +105,59 @@ async function generatePDF() {
       console.log('📄 Stylesheets found:', JSON.stringify(stylesheets, null, 2));
     }
     
-    // Inject PDF-optimized styles
-    console.log('🎨 Injecting PDF optimization styles...');
+    // Inject PDF-optimized styles with correct theme colors
+    console.log('🎨 Injecting comprehensive PDF styles with ceramic theme...');
     await page.addStyleTag({
       content: `
-        /* Ensure CSS Grid layout works */
-        .wrapper {
-          display: grid !important;
-          grid-template-columns: repeat(10, 1fr) !important;
-          background: #42A8C0 !important;
-          max-width: 1000px !important;
-          margin: 20px auto !important;
-          box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1) !important;
+        /* Ceramic theme variables */
+        :root {
+          --theme-color: #6d6e8a;
+          --text-color: #3F4650;
+          --text-color-secondary: #545E6C;
+          --text-grey: #97AAC3;
+          --smoky-white: #f5f5f5;
         }
         
-        .sidebar-wrapper {
-          grid-column: span 3 !important;
-          background: #42A8C0 !important;
-          color: #fff !important;
-          padding: 30px !important;
-        }
-        
-        .main-wrapper {
-          grid-column: span 7 !important;
-          background: #fff !important;
-          padding: 60px !important;
-        }
-        
-        /* Typography */
+        /* Base styles */
         body {
           font-family: "Roboto", Arial, sans-serif !important;
-          color: #666 !important;
-          background: #f5f5f5 !important;
+          color: var(--text-color-secondary) !important;
+          background: var(--smoky-white) !important;
           font-size: 14px !important;
           padding: 0 !important;
           margin: 0 !important;
+          -webkit-font-smoothing: antialiased !important;
+          -moz-osx-font-smoothing: grayscale !important;
+        }
+        
+        /* Main wrapper - CSS Grid layout */
+        .wrapper {
+          display: grid !important;
+          grid-template-columns: repeat(10, 1fr) !important;
+          background: var(--theme-color) !important;
+          max-width: 1000px !important;
+          margin: 20px auto !important;
+          position: relative !important;
+          box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Sidebar */
+        .sidebar-wrapper {
+          grid-column: span 3 !important;
+          order: 1 !important;
+          background: var(--theme-color) !important;
+          color: #fff !important;
+        }
+        
+        .sidebar-wrapper a {
+          color: #fff !important;
+        }
+        
+        .profile-container {
+          padding: 30px !important;
+          background: rgba(0, 0, 0, 0.2) !important;
+          text-align: center !important;
+          color: #fff !important;
         }
         
         .name {
@@ -158,14 +176,33 @@ async function generatePDF() {
           margin-bottom: 0 !important;
         }
         
-        .section-title {
-          text-transform: uppercase !important;
-          font-size: 20px !important;
-          font-weight: 500 !important;
-          color: #369fb5 !important;
-          position: relative !important;
-          margin-top: 0 !important;
-          margin-bottom: 20px !important;
+        .avatar {
+          max-width: 100px !important;
+          margin-bottom: 15px !important;
+          border: 0px solid #fff !important;
+          border-radius: 100% !important;
+          box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .contact-list .fas,
+        .contact-list .fab,
+        .contact-list .far {
+          margin-right: 5px !important;
+          font-size: 18px !important;
+          vertical-align: middle !important;
+        }
+        
+        .contact-list li {
+          margin-bottom: 15px !important;
+          color: #fff !important;
+        }
+        
+        .contact-list li:last-child {
+          margin-bottom: 0 !important;
+        }
+        
+        .container-block {
+          padding: 30px !important;
         }
         
         .container-block-title {
@@ -177,48 +214,70 @@ async function generatePDF() {
           color: #fff !important;
         }
         
-        .contact-list {
-          list-style: none !important;
-          padding: 0 !important;
-        }
-        
-        .contact-list li {
+        .education-container .item {
           margin-bottom: 15px !important;
-          color: #fff !important;
         }
         
-        .profile-container {
-          padding: 30px !important;
-          background: rgba(0, 0, 0, 0.2) !important;
-          text-align: center !important;
-          color: #fff !important;
+        .education-container .item:last-child {
+          margin-bottom: 0 !important;
         }
         
-        .avatar {
-          max-width: 100px !important;
-          margin-bottom: 15px !important;
-          border: 0px solid #fff !important;
-          border-radius: 100% !important;
-          box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1) !important;
+        .education-container .meta {
+          color: rgba(256, 256, 256, 0.6) !important;
+          font-weight: 500 !important;
+          margin-bottom: 0px !important;
+          margin-top: 0 !important;
         }
         
-        .container-block {
-          padding: 30px !important;
+        .education-container .time {
+          color: rgba(256, 256, 256, 0.6) !important;
+          font-weight: 500 !important;
+          margin-bottom: 0px !important;
         }
         
-        .item {
+        .languages-container .lang-desc {
+          color: rgba(256, 256, 256, 0.6) !important;
+        }
+        
+        /* Main content */
+        .main-wrapper {
+          grid-column: span 7 !important;
+          order: 2 !important;
+          background: #fff !important;
+          padding: 60px !important;
+        }
+        
+        .section-title {
+          text-transform: uppercase !important;
+          font-size: 20px !important;
+          font-weight: 500 !important;
+          color: #5a5b73 !important;
+          position: relative !important;
+          margin-top: 0 !important;
+          margin-bottom: 20px !important;
+        }
+        
+        .section {
+          margin-bottom: 60px !important;
+        }
+        
+        .experiences-section .item,
+        .educations-section .item {
           margin-bottom: 30px !important;
         }
         
-        .upper-row {
+        .upper-row,
+        .second-upper-row {
           position: relative !important;
           overflow: hidden !important;
           margin-bottom: 2px !important;
           display: flex !important;
         }
         
-        .job-title, .degree, .cert-title {
-          color: #666 !important;
+        .job-title,
+        .degree,
+        .cert-title {
+          color: var(--text-color) !important;
           font-size: 16px !important;
           margin-top: 0 !important;
           margin-bottom: 0 !important;
@@ -226,42 +285,66 @@ async function generatePDF() {
           flex: 75% !important;
         }
         
-        .time, .cert-url {
+        .time,
+        .cert-url {
           position: absolute !important;
           right: 0 !important;
           top: 0 !important;
-          color: #999 !important;
+          color: var(--text-grey) !important;
           flex: 25% !important;
         }
         
-        .company, .university, .cert-org {
+        .company,
+        .university,
+        .cert-org {
           margin-bottom: 10px !important;
-          color: #999 !important;
+          color: var(--text-grey) !important;
         }
         
+        /* Skills section */
         .skillset .item {
           margin-bottom: 15px !important;
           overflow: hidden !important;
         }
         
-        .level-title {
+        .skillset .level-title {
           font-size: 14px !important;
           margin-top: 0 !important;
           margin-bottom: 12px !important;
         }
         
-        .level-bar {
+        .skillset .level-bar {
           height: 12px !important;
-          background: #f5f5f5 !important;
+          background: var(--smoky-white) !important;
         }
         
-        .level-bar-inner {
+        .skillset .level-bar-inner {
           height: 12px !important;
-          background: #5bc0de !important;
+          background: #8a8ba6 !important;
+        }
+        
+        /* Certifications */
+        .certifications-section .item {
+          margin-bottom: 20px !important;
+        }
+        
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+          font-weight: 700 !important;
+        }
+        
+        p {
+          line-height: 1.5 !important;
+        }
+        
+        /* Links */
+        a {
+          color: #5a5b73 !important;
         }
         
         /* Hide elements that shouldn't be in PDF */
         footer, .footer { display: none !important; }
+        .btn, button, .pdf-download-btn { display: none !important; }
         
         /* Ensure colors are preserved */
         * {
@@ -270,13 +353,12 @@ async function generatePDF() {
           print-color-adjust: exact !important;
         }
         
-        /* Hide any buttons or interactive elements */
-        .btn, button, .pdf-download-btn {
-          display: none !important;
+        /* Page breaks */
+        .section {
+          page-break-inside: avoid;
         }
         
-        /* Ensure proper page breaks */
-        .section {
+        .item {
           page-break-inside: avoid;
         }
       `
