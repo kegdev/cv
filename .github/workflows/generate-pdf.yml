@@ -39,37 +39,19 @@ jobs:
           exit 1
         fi
         
-    - name: Verify print page exists
+    - name: Verify main page exists
       run: |
-        echo "🔍 Looking for print page..."
+        echo "🔍 Looking for main page..."
         
-        PRINT_FOUND=false
-        PRINT_PATH=""
-        
-        # Check for print/index.html
-        if [ -f "_site/print/index.html" ]; then
-          echo "✅ Found print page at: _site/print/index.html"
-          PRINT_FOUND=true
-          PRINT_PATH="_site/print/index.html"
-        fi
-        
-        # Check for print.html
-        if [ -f "_site/print.html" ]; then
-          echo "✅ Found print page at: _site/print.html"
-          PRINT_FOUND=true
-          PRINT_PATH="_site/print.html"
-        fi
-        
-        if [ "$PRINT_FOUND" = false ]; then
-          echo "❌ ERROR: Print page not found!"
+        if [ -f "_site/index.html" ]; then
+          echo "✅ Found main page at: _site/index.html"
+          echo "MAIN_PAGE_EXISTS=true" >> $GITHUB_ENV
+        else
+          echo "❌ ERROR: Main page not found!"
           echo "📁 Available files in _site:"
           ls -la _site/ || echo "Cannot list _site directory"
-          echo "📁 Looking for any print-related files:"
-          find _site -name "*print*" -type f || echo "No print-related files found"
           exit 1
         fi
-        
-        echo "PRINT_PATH=$PRINT_PATH" >> $GITHUB_ENV
         
     - name: Generate PDF using playwright
       run: |
@@ -125,46 +107,62 @@ jobs:
             page = await context.newPage();
             console.log('✅ Page created successfully');
             
-            // Find print file
-            const printPath = process.env.PRINT_PATH;
-            console.log('📂 Print path from env:', printPath);
+            // Load the main page instead of print page for exact desktop appearance
+            const mainUrl = 'file://' + path.resolve('_site/index.html');
+            console.log('🔗 Loading main page URL:', mainUrl);
             
-            if (!printPath) {
-              throw new Error('PRINT_PATH environment variable not set');
+            if (!fs.existsSync('_site/index.html')) {
+              console.log('❌ Main page does not exist at: _site/index.html');
+              throw new Error('Main page does not exist');
             }
             
-            const fullPath = path.resolve(printPath);
-            console.log('📂 Full print file path:', fullPath);
-            
-            if (!fs.existsSync(fullPath)) {
-              console.log('❌ Print file does not exist at:', fullPath);
-              console.log('📁 Current directory contents:');
-              fs.readdirSync('.').forEach(item => console.log('  -', item));
-              if (fs.existsSync('_site')) {
-                console.log('📁 _site directory contents:');
-                fs.readdirSync('_site').forEach(item => console.log('  -', item));
-              }
-              throw new Error('Print file does not exist: ' + fullPath);
-            }
-            
-            const fileStats = fs.statSync(fullPath);
-            console.log('📊 Print file size:', fileStats.size, 'bytes');
-            
-            // Read file content for debugging
-            const fileContent = fs.readFileSync(fullPath, 'utf8');
-            console.log('📝 File content length:', fileContent.length);
-            console.log('📝 File content preview:', fileContent.substring(0, 200) + '...');
-            
-            // Load the page
-            const fileUrl = 'file://' + fullPath;
-            console.log('🔗 Loading URL:', fileUrl);
-            
-            const response = await page.goto(fileUrl, {
+            const response = await page.goto(mainUrl, {
               waitUntil: 'networkidle',
               timeout: 60000
             });
             
             console.log('✅ Page loaded, response status:', response ? response.status() : 'no response');
+            
+            // Inject CSS to optimize for PDF generation while keeping desktop appearance
+            await page.addStyleTag({
+              content: `
+                /* Hide elements that shouldn't be in PDF */
+                footer, .footer { display: none !important; }
+                
+                /* Ensure colors are preserved */
+                * {
+                  -webkit-print-color-adjust: exact !important;
+                  color-adjust: exact !important;
+                  print-color-adjust: exact !important;
+                }
+                
+                /* Optimize body for PDF */
+                body {
+                  padding: 0 !important;
+                  margin: 0 !important;
+                  background: #f5f5f5 !important;
+                }
+                
+                /* Ensure wrapper fits properly */
+                .wrapper {
+                  margin: 20px auto !important;
+                  max-width: 1000px !important;
+                  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1) !important;
+                }
+                
+                /* Hide any buttons or interactive elements */
+                .btn, button, .pdf-download-btn {
+                  display: none !important;
+                }
+                
+                /* Ensure proper page breaks */
+                .section {
+                  page-break-inside: avoid;
+                }
+              `
+            });
+            
+            console.log('✅ PDF optimization styles injected');
             
             // Wait for content to load
             console.log('⏳ Waiting for page content...');
@@ -184,17 +182,20 @@ jobs:
               throw new Error('Page appears to be empty');
             }
             
-            // Generate PDF
+            // Generate PDF with settings optimized for desktop layout
             console.log('📄 Generating PDF...');
             const pdf = await page.pdf({
               format: 'A4',
               printBackground: true,
+              preferCSSPageSize: false,
+              displayHeaderFooter: false,
               margin: { 
-                top: '0.5in', 
-                right: '0.5in', 
-                bottom: '0.5in', 
-                left: '0.5in' 
-              }
+                top: '0.3in', 
+                right: '0.3in', 
+                bottom: '0.3in', 
+                left: '0.3in' 
+              },
+              scale: 0.8  // Slightly smaller scale to fit desktop layout better
             });
             console.log('✅ PDF generated, size:', pdf.length, 'bytes');
             
@@ -256,34 +257,13 @@ jobs:
           
           if [ $PDF_SIZE -lt 1000 ]; then
             echo "⚠️  WARNING: PDF file seems very small, might be corrupted"
+            exit 1
           fi
+          
+          echo "✅ PDF generation completed successfully!"
         else
           echo "❌ ERROR: PDF file was not created!"
           echo "📁 Contents of assets/pdf directory:"
           ls -la assets/pdf/ || echo "assets/pdf directory does not exist"
           exit 1
-        fi
-        
-    - name: Commit and push updated PDF
-      run: |
-        echo "📤 Committing and pushing PDF..."
-        
-        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
-        
-        # Check if there are changes to commit
-        if git diff --quiet assets/pdf/cv-keg-dev-print.pdf; then
-          echo "ℹ️  No changes detected in PDF file"
-        else
-          echo "📝 Changes detected in PDF file"
-        fi
-        
-        git add assets/pdf/cv-keg-dev-print.pdf
-        
-        if git commit -m "🤖 Auto-update CV PDF [skip ci]"; then
-          echo "✅ PDF committed successfully"
-          git push
-          echo "✅ Changes pushed to repository"
-        else
-          echo "ℹ️  No changes to commit"
         fi
