@@ -1,0 +1,156 @@
+name: Generate PDF CV
+
+on:
+  push:
+    branches: [ main, master ]
+    paths: 
+      - '_data/data.yml'
+      - '_includes/**'
+      - '_layouts/**'
+      - '_sass/**'
+      - 'assets/css/**'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  generate-pdf:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write  # Required for pushing changes back
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+      
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.1'
+        bundler-cache: true
+        
+    - name: Build Jekyll site
+      run: |
+        bundle exec jekyll build --destination _site
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install Puppeteer
+      run: |
+        npm install puppeteer
+        
+    - name: Generate PDF
+      run: |
+        node << 'EOF'
+        const puppeteer = require('puppeteer');
+        const fs = require('fs');
+        const path = require('path');
+        
+        (async () => {
+          try {
+            console.log('Starting PDF generation...');
+            
+            const browser = await puppeteer.launch({
+              headless: 'new',
+              args: [
+                '--no-sandbox', 
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-gpu'
+              ]
+            });
+            
+            const page = await browser.newPage();
+            
+            // Set viewport for consistent rendering
+            await page.setViewport({ width: 1200, height: 800 });
+            
+            // Load the print version
+            const printPath = path.resolve('_site/print/index.html');
+            console.log('Loading print page from:', printPath);
+            
+            if (!fs.existsSync(printPath)) {
+              throw new Error('Print page not found at: ' + printPath);
+            }
+            
+            await page.goto('file://' + printPath, {
+              waitUntil: 'networkidle0',
+              timeout: 30000
+            });
+            
+            // Wait a bit more for fonts and styles to load
+            await page.waitForTimeout(2000);
+            
+            console.log('Generating PDF...');
+            
+            // Generate PDF with optimized settings
+            const pdf = await page.pdf({
+              format: 'A4',
+              printBackground: true,
+              preferCSSPageSize: false,
+              margin: {
+                top: '0.5in',
+                right: '0.5in',
+                bottom: '0.5in',
+                left: '0.5in'
+              }
+            });
+            
+            // Ensure assets/pdf directory exists
+            const pdfDir = 'assets/pdf';
+            if (!fs.existsSync(pdfDir)) {
+              fs.mkdirSync(pdfDir, { recursive: true });
+            }
+            
+            // Remove existing PDF if it exists
+            const pdfPath = 'assets/pdf/cv-keg-dev-print.pdf';
+            if (fs.existsSync(pdfPath)) {
+              fs.unlinkSync(pdfPath);
+              console.log('Removed existing PDF');
+            }
+            
+            // Save new PDF
+            fs.writeFileSync(pdfPath, pdf);
+            console.log('PDF generated successfully at:', pdfPath);
+            
+            // Log file size
+            const stats = fs.statSync(pdfPath);
+            console.log('PDF file size:', Math.round(stats.size / 1024), 'KB');
+            
+            await browser.close();
+            
+          } catch (error) {
+            console.error('PDF generation failed:', error);
+            process.exit(1);
+          }
+        })();
+        EOF
+        
+    - name: Check for PDF changes
+      id: check_changes
+      run: |
+        if git diff --quiet assets/pdf/cv-keg-dev-print.pdf; then
+          echo "No changes to PDF"
+          echo "changed=false" >> $GITHUB_OUTPUT
+        else
+          echo "PDF has changes"
+          echo "changed=true" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Commit and push PDF if changed
+      if: steps.check_changes.outputs.changed == 'true'
+      run: |
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add assets/pdf/cv-keg-dev-print.pdf
+        git commit -m "🤖 Auto-update CV PDF [skip ci]"
+        git push
+        
+    - name: No changes detected
+      if: steps.check_changes.outputs.changed == 'false'
+      run: |
+        echo "PDF content unchanged, skipping commit"
