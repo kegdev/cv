@@ -3,12 +3,6 @@ name: Generate PDF CV
 on:
   push:
     branches: [ main, master ]
-    paths: 
-      - '_data/data.yml'
-      - '_includes/**'
-      - '_layouts/**'
-      - '_sass/**'
-      - 'assets/css/**'
   workflow_dispatch: # Allow manual trigger
 
 jobs:
@@ -43,9 +37,9 @@ jobs:
       run: |
         npm install puppeteer
         
-    - name: Generate PDF
+    - name: Create PDF generation script
       run: |
-        node << 'EOF'
+        cat > generate-pdf.js << 'EOF'
         const puppeteer = require('puppeteer');
         const fs = require('fs');
         const path = require('path');
@@ -69,13 +63,33 @@ jobs:
             // Set viewport for consistent rendering
             await page.setViewport({ width: 1200, height: 800 });
             
-            // Load the print version
-            const printPath = path.resolve('_site/print/index.html');
-            console.log('Loading print page from:', printPath);
+            // Check possible print page locations
+            const possiblePaths = [
+              '_site/print/index.html',
+              '_site/print.html'
+            ];
             
-            if (!fs.existsSync(printPath)) {
-              throw new Error('Print page not found at: ' + printPath);
+            let printPath = null;
+            for (const testPath of possiblePaths) {
+              const fullPath = path.resolve(testPath);
+              console.log('Checking for print page at:', fullPath);
+              if (fs.existsSync(fullPath)) {
+                printPath = fullPath;
+                break;
+              }
             }
+            
+            if (!printPath) {
+              console.log('Available files in _site:');
+              if (fs.existsSync('_site')) {
+                fs.readdirSync('_site').forEach(file => {
+                  console.log('  -', file);
+                });
+              }
+              throw new Error('Print page not found in any expected location');
+            }
+            
+            console.log('Loading print page from:', printPath);
             
             await page.goto('file://' + printPath, {
               waitUntil: 'networkidle0',
@@ -130,27 +144,13 @@ jobs:
         })();
         EOF
         
-    - name: Check for PDF changes
-      id: check_changes
-      run: |
-        if git diff --quiet assets/pdf/cv-keg-dev-print.pdf; then
-          echo "No changes to PDF"
-          echo "changed=false" >> $GITHUB_OUTPUT
-        else
-          echo "PDF has changes"
-          echo "changed=true" >> $GITHUB_OUTPUT
-        fi
+    - name: Generate PDF
+      run: node generate-pdf.js
         
-    - name: Commit and push PDF if changed
-      if: steps.check_changes.outputs.changed == 'true'
+    - name: Commit and push updated PDF
       run: |
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
         git add assets/pdf/cv-keg-dev-print.pdf
-        git commit -m "🤖 Auto-update CV PDF [skip ci]"
+        git commit -m "🤖 Auto-update CV PDF [skip ci]" || echo "No changes to commit"
         git push
-        
-    - name: No changes detected
-      if: steps.check_changes.outputs.changed == 'false'
-      run: |
-        echo "PDF content unchanged, skipping commit"
