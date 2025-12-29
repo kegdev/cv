@@ -75,14 +75,191 @@ async function generatePDF() {
     
     console.log('✅ Page loaded with status:', response.status());
     
-    // Wait for page to fully load
-    console.log('⏳ Waiting for page content to load...');
-    await page.waitForTimeout(5000);
+    // Wait for page to fully load including CSS
+    console.log('⏳ Waiting for page content and styles to load...');
+    await page.waitForTimeout(8000); // Increased wait time for CSS
+    
+    // Check if CSS is loaded by looking for styled elements
+    const hasStyles = await page.evaluate(() => {
+      const wrapper = document.querySelector('.wrapper');
+      if (!wrapper) return false;
+      
+      const styles = window.getComputedStyle(wrapper);
+      console.log('Wrapper background:', styles.backgroundColor);
+      console.log('Wrapper display:', styles.display);
+      
+      return styles.display === 'grid' || styles.backgroundColor !== 'rgba(0, 0, 0, 0)';
+    });
+    
+    console.log('🎨 CSS loaded status:', hasStyles ? 'Styles applied' : 'No styles detected');
+    
+    if (!hasStyles) {
+      console.log('⚠️ CSS not loading properly, checking for stylesheet links...');
+      const stylesheets = await page.evaluate(() => {
+        const links = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
+        return links.map(link => ({
+          href: link.href,
+          loaded: link.sheet !== null
+        }));
+      });
+      console.log('📄 Stylesheets found:', JSON.stringify(stylesheets, null, 2));
+    }
     
     // Inject PDF-optimized styles
     console.log('🎨 Injecting PDF optimization styles...');
     await page.addStyleTag({
       content: `
+        /* Ensure CSS Grid layout works */
+        .wrapper {
+          display: grid !important;
+          grid-template-columns: repeat(10, 1fr) !important;
+          background: #42A8C0 !important;
+          max-width: 1000px !important;
+          margin: 20px auto !important;
+          box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .sidebar-wrapper {
+          grid-column: span 3 !important;
+          background: #42A8C0 !important;
+          color: #fff !important;
+          padding: 30px !important;
+        }
+        
+        .main-wrapper {
+          grid-column: span 7 !important;
+          background: #fff !important;
+          padding: 60px !important;
+        }
+        
+        /* Typography */
+        body {
+          font-family: "Roboto", Arial, sans-serif !important;
+          color: #666 !important;
+          background: #f5f5f5 !important;
+          font-size: 14px !important;
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+        
+        .name {
+          font-size: 32px !important;
+          font-weight: 900 !important;
+          margin-top: 0 !important;
+          margin-bottom: 10px !important;
+          color: #fff !important;
+        }
+        
+        .tagline {
+          color: rgba(256, 256, 256, 0.6) !important;
+          font-size: 16px !important;
+          font-weight: 400 !important;
+          margin-top: 0 !important;
+          margin-bottom: 0 !important;
+        }
+        
+        .section-title {
+          text-transform: uppercase !important;
+          font-size: 20px !important;
+          font-weight: 500 !important;
+          color: #369fb5 !important;
+          position: relative !important;
+          margin-top: 0 !important;
+          margin-bottom: 20px !important;
+        }
+        
+        .container-block-title {
+          text-transform: uppercase !important;
+          font-size: 16px !important;
+          font-weight: 700 !important;
+          margin-top: 0 !important;
+          margin-bottom: 15px !important;
+          color: #fff !important;
+        }
+        
+        .contact-list {
+          list-style: none !important;
+          padding: 0 !important;
+        }
+        
+        .contact-list li {
+          margin-bottom: 15px !important;
+          color: #fff !important;
+        }
+        
+        .profile-container {
+          padding: 30px !important;
+          background: rgba(0, 0, 0, 0.2) !important;
+          text-align: center !important;
+          color: #fff !important;
+        }
+        
+        .avatar {
+          max-width: 100px !important;
+          margin-bottom: 15px !important;
+          border: 0px solid #fff !important;
+          border-radius: 100% !important;
+          box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .container-block {
+          padding: 30px !important;
+        }
+        
+        .item {
+          margin-bottom: 30px !important;
+        }
+        
+        .upper-row {
+          position: relative !important;
+          overflow: hidden !important;
+          margin-bottom: 2px !important;
+          display: flex !important;
+        }
+        
+        .job-title, .degree, .cert-title {
+          color: #666 !important;
+          font-size: 16px !important;
+          margin-top: 0 !important;
+          margin-bottom: 0 !important;
+          font-weight: 500 !important;
+          flex: 75% !important;
+        }
+        
+        .time, .cert-url {
+          position: absolute !important;
+          right: 0 !important;
+          top: 0 !important;
+          color: #999 !important;
+          flex: 25% !important;
+        }
+        
+        .company, .university, .cert-org {
+          margin-bottom: 10px !important;
+          color: #999 !important;
+        }
+        
+        .skillset .item {
+          margin-bottom: 15px !important;
+          overflow: hidden !important;
+        }
+        
+        .level-title {
+          font-size: 14px !important;
+          margin-top: 0 !important;
+          margin-bottom: 12px !important;
+        }
+        
+        .level-bar {
+          height: 12px !important;
+          background: #f5f5f5 !important;
+        }
+        
+        .level-bar-inner {
+          height: 12px !important;
+          background: #5bc0de !important;
+        }
+        
         /* Hide elements that shouldn't be in PDF */
         footer, .footer { display: none !important; }
         
@@ -91,20 +268,6 @@ async function generatePDF() {
           -webkit-print-color-adjust: exact !important;
           color-adjust: exact !important;
           print-color-adjust: exact !important;
-        }
-        
-        /* Optimize body for PDF */
-        body {
-          padding: 0 !important;
-          margin: 0 !important;
-          background: #f5f5f5 !important;
-        }
-        
-        /* Ensure wrapper fits properly */
-        .wrapper {
-          margin: 20px auto !important;
-          max-width: 1000px !important;
-          box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1) !important;
         }
         
         /* Hide any buttons or interactive elements */
@@ -126,6 +289,18 @@ async function generatePDF() {
       fullPage: true 
     });
     console.log('✅ Screenshot saved as debug-screenshot.png');
+    
+    // Wait for injected styles to take effect
+    console.log('⏳ Waiting for injected styles to apply...');
+    await page.waitForTimeout(3000);
+    
+    // Take another screenshot after styling
+    console.log('📸 Taking post-styling screenshot...');
+    await page.screenshot({ 
+      path: 'debug-screenshot-styled.png', 
+      fullPage: true 
+    });
+    console.log('✅ Styled screenshot saved as debug-screenshot-styled.png');
     
     // Validate page content
     const title = await page.title();

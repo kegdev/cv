@@ -94,12 +94,14 @@ jobs:
         echo "📝 Running PDF generation script..."
         npm run generate-pdf
         
-    - name: Upload debug screenshot
+    - name: Upload debug screenshots
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: debug-screenshot
-        path: debug-screenshot.png
+        name: debug-screenshots
+        path: |
+          debug-screenshot.png
+          debug-screenshot-styled.png
         retention-days: 7
         
     - name: Verify PDF was created
