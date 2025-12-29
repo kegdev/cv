@@ -24,6 +24,18 @@ jobs:
         ruby-version: '3.1'
         bundler-cache: true
         
+    - name: Verify Jekyll setup
+      run: |
+        echo "🔍 Verifying Jekyll setup..."
+        bundle --version
+        bundle list | grep jekyll
+        
+        echo "📋 Jekyll configuration:"
+        cat _config.yml
+        
+        echo "📊 Data file content preview:"
+        head -20 _data/data.yml
+        
     - name: Build Jekyll site
       run: |
         echo "🔨 Building Jekyll site..."
@@ -34,6 +46,18 @@ jobs:
         if [ -d "_site" ]; then
           find _site -type f -name "*.html" | head -20
           echo "📊 Total HTML files: $(find _site -name "*.html" | wc -l)"
+          
+          echo "📄 Checking main index.html content:"
+          if [ -f "_site/index.html" ]; then
+            echo "✅ Main page exists"
+            head -20 _site/index.html
+            echo "📊 Main page size: $(wc -c < _site/index.html) bytes"
+          else
+            echo "❌ Main page missing!"
+          fi
+          
+          echo "📁 Full _site directory contents:"
+          ls -la _site/
         else
           echo "❌ ERROR: _site directory was not created!"
           exit 1
@@ -69,6 +93,14 @@ jobs:
         # Run PDF generation script
         echo "📝 Running PDF generation script..."
         npm run generate-pdf
+        
+    - name: Upload debug screenshot
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: debug-screenshot
+        path: debug-screenshot.png
+        retention-days: 7
         
     - name: Verify PDF was created
       run: |

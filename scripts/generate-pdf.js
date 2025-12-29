@@ -119,6 +119,14 @@ async function generatePDF() {
       `
     });
     
+    // Take a screenshot for debugging
+    console.log('📸 Taking screenshot for debugging...');
+    await page.screenshot({ 
+      path: 'debug-screenshot.png', 
+      fullPage: true 
+    });
+    console.log('✅ Screenshot saved as debug-screenshot.png');
+    
     // Validate page content
     const title = await page.title();
     console.log('📄 Page title:', title);
