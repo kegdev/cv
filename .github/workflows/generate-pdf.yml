@@ -267,3 +267,23 @@ jobs:
           ls -la assets/pdf/ || echo "assets/pdf directory does not exist"
           exit 1
         fi
+        
+    - name: Commit and push updated PDF
+      run: |
+        echo "📤 Committing and pushing PDF..."
+        
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        
+        # Add the PDF file
+        git add assets/pdf/cv-keg-dev-print.pdf
+        
+        # Check if there are changes to commit
+        if git diff --staged --quiet; then
+          echo "ℹ️  No changes detected in PDF file"
+        else
+          echo "📝 Changes detected in PDF file"
+          git commit -m "🤖 Auto-update CV PDF [skip ci]"
+          git push
+          echo "✅ PDF updated and pushed to repository"
+        fi
