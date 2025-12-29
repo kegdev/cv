@@ -75,22 +75,57 @@ async function generatePDF() {
     
     console.log('✅ Page loaded with status:', response.status());
     
-    // Wait for images to load
-    console.log('🖼️ Waiting for images to load...');
-    await page.waitForFunction(() => {
-      const images = Array.from(document.querySelectorAll('img'));
-      return images.every(img => img.complete);
-    }, { timeout: 10000 }).catch(() => {
-      console.log('⚠️ Some images may not have loaded completely');
+    // Wait for images to load and fix image paths
+    console.log('🖼️ Fixing image paths and waiting for images to load...');
+    
+    // Fix relative image paths for file:// protocol
+    await page.evaluate(() => {
+      const images = document.querySelectorAll('img');
+      images.forEach(img => {
+        if (img.src && img.src.startsWith('file://') && img.src.includes('/assets/images/')) {
+          // Image path is already correct for file protocol
+          console.log('Image src:', img.src);
+        } else if (img.getAttribute('src') && img.getAttribute('src').startsWith('/assets/images/')) {
+          // Fix relative path
+          const currentPath = window.location.pathname.replace('/index.html', '');
+          const newSrc = window.location.protocol + '//' + window.location.host + currentPath + img.getAttribute('src');
+          console.log('Fixing image path from', img.src, 'to', newSrc);
+          img.src = newSrc;
+        }
+      });
     });
     
-    // Check if profile image loaded
+    await page.waitForTimeout(3000);
+    
+    // Check if profile image loaded and try to fix it if not
     const profileImageStatus = await page.evaluate(() => {
       const avatar = document.querySelector('.avatar');
       if (!avatar) return 'No avatar element found';
-      if (!avatar.src) return 'No src attribute';
-      if (!avatar.complete) return 'Image not loaded';
-      if (avatar.naturalWidth === 0) return 'Image failed to load';
+      
+      console.log('Avatar src:', avatar.src);
+      console.log('Avatar complete:', avatar.complete);
+      console.log('Avatar naturalWidth:', avatar.naturalWidth);
+      
+      // If image failed to load, try to load it as base64
+      if (!avatar.complete || avatar.naturalWidth === 0) {
+        // Create a canvas to generate a placeholder
+        const canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 100;
+        const ctx = canvas.getContext('2d');
+        
+        // Draw a simple placeholder
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, 100, 100);
+        ctx.fillStyle = '#6d6e8a';
+        ctx.font = '40px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('KG', 50, 60);
+        
+        avatar.src = canvas.toDataURL();
+        return 'Generated placeholder image';
+      }
+      
       return `Image loaded: ${avatar.naturalWidth}x${avatar.naturalHeight}`;
     });
     console.log('👤 Profile image status:', profileImageStatus);
@@ -423,19 +458,53 @@ async function generatePDF() {
           print-color-adjust: exact !important;
         }
         
-        /* Page breaks */
+        /* Page breaks - Keep sections together */
         .section {
-          page-break-inside: avoid;
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
         }
         
         .item {
-          page-break-inside: avoid;
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
+        }
+        
+        /* Keep career profile and experiences together */
+        .summary-section {
+          page-break-after: avoid !important;
+          break-after: avoid !important;
+        }
+        
+        .experiences-section {
+          page-break-before: avoid !important;
+          break-before: avoid !important;
+        }
+        
+        /* Prevent orphaned titles */
+        .section-title {
+          page-break-after: avoid !important;
+          break-after: avoid !important;
+        }
+        
+        /* Keep job entries together */
+        .experiences-section .item,
+        .educations-section .item,
+        .certifications-section .item {
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
+          margin-bottom: 25px !important;
         }
         
         /* Force image loading */
         img {
           max-width: 100% !important;
           height: auto !important;
+        }
+        
+        /* Ensure profile image displays */
+        .avatar {
+          background: #ffffff !important;
+          border: 2px solid rgba(255,255,255,0.3) !important;
         }
       `
     });
@@ -482,12 +551,14 @@ async function generatePDF() {
       preferCSSPageSize: false,
       displayHeaderFooter: false,
       margin: { 
-        top: '0.3in', 
-        right: '0.3in', 
-        bottom: '0.3in', 
-        left: '0.3in' 
+        top: '0.4in', 
+        right: '0.4in', 
+        bottom: '0.4in', 
+        left: '0.4in' 
       },
-      scale: 0.8
+      scale: 0.75,  // Slightly smaller to fit more content
+      pageRanges: '', // Print all pages
+      omitBackground: false
     });
     
     console.log('✅ PDF generated, size:', pdf.length, 'bytes');
