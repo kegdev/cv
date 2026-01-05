@@ -141,7 +141,13 @@ jobs:
           echo "ℹ️  No changes detected in PDF file"
         else
           echo "📝 Changes detected in PDF file"
-          git commit -m "🤖 Auto-update CV PDF [skip ci]"
+          # Use [skip ci] and [skip actions] to prevent triggering more workflows
+          git commit -m "🤖 Auto-update CV PDF
+
+[skip ci][skip actions]
+
+- Updated PDF generated from latest CV content
+- Automated by GitHub Actions PDF generation workflow"
           git push
           echo "✅ PDF updated and pushed to repository"
         fi
