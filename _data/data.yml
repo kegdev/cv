@@ -9,7 +9,8 @@ sidebar:
 
     # Profile information
     name: Kevin Earl Gardner
-    tagline: Development Manager
+    tagline: E-commerce Development Manager
+    location: Remote (US Central Time)
     avatar: profile.png  #place a 100x100 picture inside /assets/images/ folder and provide the name of the file below
 
     # Sidebar links
@@ -56,7 +57,9 @@ sidebar:
 career-profile:
     title: Career Profile
     summary: |
-      Hi Y'all! 👋 I'm a dedicated certified developer who specializes in technical leadership and development on various e-commerce platforms, including Adobe Commerce, BigCommerce and Shopify. I also have C# development experience as an active skill. My current day to day includes developer oversight, active development, and client-facing technical project management. I'm very driven and detail-oriented, with over five years of previous experience in QA.
+      Hi Y'all! 👋 I'm an accomplished Development Manager with 18+ years of progressive experience in e-commerce technology leadership. Currently leading the development team at Human Element, specializing in Adobe Commerce, BigCommerce, Znode, and Shopify implementations. Proven track record of scaling from individual contributor to executive leadership, with expertise spanning full-stack development, team management, and strategic technology planning. 
+      
+      Combines hands-on technical excellence with strong leadership capabilities, having successfully managed teams of 2-10 developers across dozens of concurrent projects. Maintains active certifications in multiple e-commerce platforms while driving innovation in development processes, client relations, and technical architecture. Background includes 5+ years in QA, providing a unique perspective on quality-driven development practices.
 education:
     title: Education
     info:
@@ -93,7 +96,7 @@ experiences:
         time: April 2019 - August 2020
         company: EBSCO Industries, Inc. - Birmingham, AL
         details: |
-          Facilitates team activities while mentoring web developers while managing a portfolio of 6 simultaneous client projects, maintaining a 95% on-time delivery rate. Primarily Wordpress, Magento 1.x/2.x, PWA development in addition to qualifications of previous positions.
+          Led cross-functional development team while mentoring junior developers and managing a portfolio of 6 simultaneous client projects, maintaining a 95% on-time delivery rate. Specialized in WordPress, Magento 1.x/2.x, and PWA development. Established development workflows and quality standards that improved team efficiency and client satisfaction.
       - role: Senior Magento PHP Developer
         time: April 2016 - April 2019
         company: EBSCO Industries, Inc. - Birmingham, AL
@@ -222,7 +225,7 @@ skills:
     title: Skills &amp; Proficiency
 
     toolset:
-      - name: PHP (Laravel, Sympony)
+      - name: PHP (Laravel, Symfony)
         level: 85%
 
       - name: SCSS/LESS/CSS
@@ -231,31 +234,31 @@ skills:
       - name: C#/.Net Core/Razor/MVC
         level: 75%
 
-      - name: Magento 2.x
+      - name: Adobe Commerce (Magento 2.x)
         level: 80%
 
-      - name: BigCommerce (Stencil, Middleware, etc.)
+      - name: BigCommerce (Stencil, Middleware)
         level: 70%
 
-      - name: Znode FE/BE
+      - name: Znode Commerce Platform
         level: 50%
 
-      - name: AWS, Docker
+      - name: AWS, Docker, DevOps
         level: 80%
 
-      - name: AI Architecting and Support (Kiro)
+      - name: AI Integration & Development Tools
         level: 80%
 
-      - name: Leadership
+      - name: Team Leadership & Management
         level: 80%
 
-      - name: Collaboration
-        level: 60%
-
-      - name: Mentoring
+      - name: Cross-functional Collaboration
         level: 75%
 
-      - name: Client Relations
+      - name: Technical Mentoring
+        level: 85%
+
+      - name: Client Relations & Communication
         level: 95%
 
 footer: >
