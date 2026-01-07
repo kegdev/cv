@@ -24,10 +24,8 @@ jobs:
         ruby-version: '3.1'
         bundler-cache: false
         
-    - name: Clean and install dependencies
+    - name: Install dependencies
       run: |
-        echo "🧹 Cleaning bundle cache..."
-        bundle clean --force
         echo "📦 Installing dependencies..."
         bundle install
         
