@@ -14,6 +14,17 @@
   <!-- Favicon -->
   <link rel="shortcut icon" href="favicon.ico">
 
+  <!-- Theme Switcher (load early to prevent flash) -->
+  <script>
+    // Inline script to prevent flash of unstyled content
+    (function() {
+      const savedTheme = localStorage.getItem('cv-theme');
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      const initialTheme = savedTheme || systemTheme;
+      document.documentElement.setAttribute('data-theme', initialTheme);
+    })();
+  </script>
+
   <!-- Global CSS -->
   <link rel="stylesheet" href="{{ site.baseurl }}/assets/plugins/bootstrap/css/bootstrap.min.css">
 

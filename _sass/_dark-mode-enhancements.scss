@@ -1,0 +1,79 @@
+/* Dark Mode Enhancements */
+
+/* Improve readability in dark mode */
+:root[data-theme="dark"] {
+  
+  /* Enhanced shadows for dark mode */
+  .wrapper {
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .avatar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Better contrast for links */
+  a {
+    &:hover {
+      filter: brightness(1.2);
+    }
+  }
+
+  /* Improved skill bars in dark mode */
+  .level-bar {
+    border: 1px solid var(--divider);
+  }
+
+  .level-bar-inner {
+    filter: brightness(1.1);
+  }
+
+  /* Better section dividers */
+  .section {
+    border-bottom: 1px solid var(--divider);
+    padding-bottom: 40px;
+    margin-bottom: 40px;
+    
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+  }
+
+  /* Enhanced certification links */
+  .cert-url a {
+    color: var(--theme-color);
+    filter: brightness(1.2);
+    
+    &:hover {
+      filter: brightness(1.4);
+    }
+  }
+
+  /* Better print styles for dark mode */
+  @media print {
+    * {
+      background: white !important;
+      color: black !important;
+    }
+    
+    .wrapper {
+      box-shadow: none !important;
+    }
+  }
+}
+
+/* Smooth transitions for all theme changes */
+* {
+  transition: background-color 0.3s ease, 
+              color 0.3s ease, 
+              border-color 0.3s ease,
+              box-shadow 0.3s ease;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}

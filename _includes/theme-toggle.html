@@ -1,0 +1,81 @@
+<!-- Optional Theme Toggle Button -->
+<div class="theme-toggle-container">
+  <button 
+    id="theme-toggle" 
+    class="theme-toggle-btn" 
+    aria-label="Toggle dark mode"
+    title="Toggle between light and dark themes (Ctrl+Shift+D)"
+  >
+    <i class="fas fa-moon" id="theme-icon"></i>
+  </button>
+</div>
+
+<style>
+.theme-toggle-container {
+  padding: 15px 30px 0;
+  text-align: center;
+}
+
+.theme-toggle-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.theme-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.theme-toggle-btn:focus {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+.theme-toggle-btn:active {
+  transform: translateY(0);
+}
+
+/* Dark mode adjustments */
+:root[data-theme="dark"] .theme-toggle-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+:root[data-theme="dark"] .theme-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const toggleBtn = document.getElementById('theme-toggle');
+  const themeIcon = document.getElementById('theme-icon');
+  
+  if (toggleBtn && themeIcon) {
+    // Update icon based on current theme
+    function updateIcon() {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      themeIcon.className = currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    }
+    
+    // Initial icon update
+    updateIcon();
+    
+    // Listen for theme changes
+    window.addEventListener('themeChanged', updateIcon);
+    
+    // Handle button click
+    toggleBtn.addEventListener('click', function() {
+      if (window.CVThemeManager) {
+        window.CVThemeManager.toggleTheme();
+      }
+    });
+  }
+});
+</script>
