@@ -22,7 +22,14 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: '3.1'
-        bundler-cache: true
+        bundler-cache: false
+        
+    - name: Clean and install dependencies
+      run: |
+        echo "🧹 Cleaning bundle cache..."
+        bundle clean --force
+        echo "📦 Installing dependencies..."
+        bundle install
         
     - name: Verify Jekyll setup
       run: |
@@ -103,6 +110,7 @@ jobs:
           debug-screenshot.png
           debug-screenshot-styled.png
         retention-days: 7
+        if-no-files-found: ignore
         
     - name: Verify PDF was created
       run: |
