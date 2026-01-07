@@ -1,72 +1,134 @@
-<a href="https://jekyll-themes.com">
-<img src="https://img.shields.io/badge/featured%20on-JT-red.svg" height="20" alt="Jekyll Themes Shield" >
-</a>
+# KEGdev Online CV
 
-# Orbit
-> This theme is designed by Xiaoying Riley at [3rd Wave Media](http://themes.3rdwavemedia.com/).
-> Visit [her website](http://themes.3rdwavemedia.com/) for more themes.
+A customized version of the Orbit Jekyll theme, tailored for professional e-commerce development managers and technical leaders. This fork includes enhanced PDF generation capabilities and personalized styling.
 
-I have made this into a Jekyll Theme. Checkout the live demo [here](https://online-cv.webjeda.com).
+## Original Theme Credits
+
+> **Original Theme:** Orbit by Xiaoying Riley at [3rd Wave Media](http://themes.3rdwavemedia.com/)  
+> **Jekyll Implementation:** [sharu725/online-cv](https://github.com/sharu725/online-cv)  
+> **Original Demo:** [online-cv.webjeda.com](https://online-cv.webjeda.com)
+
+## Customizations in This Fork
+
+This version includes several enhancements over the original theme:
+
+- **Advanced PDF Generation**: Custom Node.js script using Playwright for high-quality PDF output
+- **Enhanced Styling**: Improved ceramic theme with better typography and layout
+- **Professional Sections**: Added certifications section with credential links
+- **Optimized Layout**: Better responsive design and print-friendly formatting
+- **Custom Content**: Tailored for e-commerce development professionals
 
 <table>
   <tr>
-    <th>Desktop</th>
-    <th>Mobile</th>
+    <th>Desktop View</th>
+    <th>Mobile View</th>
   </tr>
   <tr>
     <td>
-        <img src="https://online-cv.webjeda.com/assets/images/desktop.png?raw=true" width="600"/>
+        <img src="assets/images/kegdev-desktop-screenshot.png" width="600" alt="KEGdev CV Desktop View"/>
     </td>
     <td>
-        <img src="https://online-cv.webjeda.com/assets/images/mobile.png?raw=true" width="250"/>
+        <img src="assets/images/kegdev-mobile-screenshot.png" width="300" alt="KEGdev CV Mobile View"/>
     </td>
   </tr>
 </table>
 
-## Installation
+**Live Demo:** [cv.keg.dev](https://cv.keg.dev)
 
-* [Fork](https://github.com/sharu725/online-cv/fork) the repository;
-* Go to settings and set master branch as Github Pages source;
-* Your new site should be ready at `https://<username>.github.io/online-cv/`;
-* Printable version of the site can be found at `https://<username>.github.io/online-cv/print`. Use a third party link https://pdflayer.com/, https://www.web2pdfconvert.com/ etc to get the printable PDF.
+## Quick Start
 
-Change all the details from one place: `_data/data.yml`.
+* [Fork](https://github.com/kegdev/online-cv/fork) this repository
+* Go to settings and set main branch as GitHub Pages source
+* Your new site should be ready at `https://<username>.github.io/online-cv/`
+* Edit `_data/data.yml` to customize with your information
 
-### To preview/edit locally with docker
+## PDF Generation
+
+This fork includes an enhanced PDF generation system:
+
+```bash
+# Install dependencies
+npm install
+
+# Build the Jekyll site first
+bundle exec jekyll build
+
+# Generate PDF
+npm run generate-pdf
+```
+
+The PDF will be saved to `assets/pdf/cv-keg-dev-print.pdf` with professional styling and layout optimization.
+
+## Development Setup
+
+### Docker Development (Recommended)
 
 ```sh
 docker-compose up
 ```
 
-*docker-compose.yml* file is used to create a container that is reachable under <http://localhost:4000>.
-Changes *_data/data.yml* will be visible after a while.
+The site will be available at <http://localhost:4000>. Changes to `_data/data.yml` will be reflected after Jekyll rebuilds.
 
-### Local machine
-
-* Get the repo into your machine 
+### Local Development
 
 ```bash
-git clone https://github.com/sharu725/online-cv.git
-```
+# Clone the repository
+git clone https://github.com/kegdev/online-cv.git
+cd online-cv
 
-* Install required ruby gems
-
-```bash
+# Install Ruby dependencies
 bundle install
-```
 
-* Serve the site locally
+# Install Node.js dependencies (for PDF generation)
+npm install
 
-```bash
+# Serve the site locally
 bundle exec jekyll serve
+
+# Navigate to http://localhost:4000
 ```
 
-* Navigate to `http://localhost:4000`
+### PDF Generation Requirements
+
+- Node.js 18+ 
+- Playwright (automatically installed via npm)
+- Jekyll site must be built first (`bundle exec jekyll build`)
 
 
-## Skins
+## Customization Features
 
-There are 6 color schemes available:
+### Enhanced Sections
+
+- **Certifications**: Professional certifications with credential links and verification
+- **Advanced Skills**: Detailed proficiency levels with visual progress bars
+- **Career Timeline**: Comprehensive experience tracking with detailed descriptions
+- **PDF Optimization**: Print-friendly layouts with preserved styling
+
+### Configuration
+
+All content is managed through `_data/data.yml`:
+
+```yaml
+# Personal Information
+sidebar:
+  name: Your Name
+  tagline: Your Professional Title
+  avatar: profile.png  # Place in /assets/images/
+  
+# Professional sections
+experiences: # Work history
+certifications: # Professional certifications  
+skills: # Technical skills with proficiency levels
+education: # Academic background
+```
+
+## Available Themes
+
+The original theme includes 6 color schemes. This fork uses the ceramic theme by default with enhanced styling optimized for professional e-commerce developers.
+
+**Current Implementation:** [cv.keg.dev](https://cv.keg.dev) showcases the ceramic theme with custom enhancements.
+
+For reference, the original theme color options include:
 
 | Blue | Turquoise | Green |
 |---------|---------|---------|
@@ -76,15 +138,23 @@ There are 6 color schemes available:
 |---------|---------|---------|
 | <img src="https://online-cv.webjeda.com/assets/images/berry.jpg" width="300"/> | <img src="https://online-cv.webjeda.com/assets/images/orange.jpg" width="300"/> | <img src="https://online-cv.webjeda.com/assets/images/ceramic.jpg" width="300"/> |
 
-## Credits
+## Credits & Acknowledgments
 
-Thanks to [Nelson Estevão](https://github.com/nelsonmestevao) for all the [contributions](https://github.com/sharu725/online-cv/commits?author=nelsonmestevao).
+### Original Theme
+- **Designer**: [Xiaoying Riley](http://themes.3rdwavemedia.com/) at 3rd Wave Media
+- **Jekyll Implementation**: [sharu725](https://github.com/sharu725) 
+- **Contributors**: [Nelson Estevão](https://github.com/nelsonmestevao), [t-h-e(sfrost)](https://github.com/t-h-e)
 
-Thanks to [t-h-e(sfrost)](https://github.com/t-h-e) for all the [contributions](https://github.com/sharu725/online-cv/commits?author=t-h-e).
+### This Fork
+- **Customizations**: [KEGdev](https://github.com/kegdev)
+- **Enhanced PDF Generation**: Playwright-based system with professional styling
+- **Additional Features**: Certifications section, improved responsive design
 
-Check out for more themes: [**Jekyll Themes**](http://jekyll-themes.com).
+### Resources
+- **More Jekyll Themes**: [Jekyll Themes](http://jekyll-themes.com)
+- **Original Repository**: [sharu725/online-cv](https://github.com/sharu725/online-cv)
 
-## Star History
+## License
 
-[![Star History Chart](https://api.star-history.com/svg?repos=sharu725/online-cv&type=Date)](https://star-history.com/#sharu725/online-cv&Date)
+This project maintains the same license as the original theme. Please refer to the original repository for licensing details.
 
