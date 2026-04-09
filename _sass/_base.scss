@@ -1,12 +1,13 @@
 /* ======= Base ======= */
 body {
   font-family: "Roboto", sans-serif;
-  color: $text-color-secondary;
-  background: $smoky-white;
+  color: var(--text-color-secondary);
+  background: var(--smoky-white);
   font-size: 14px;
   padding: 30px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1,
@@ -19,10 +20,12 @@ h6 {
 }
 
 a {
-  color: darken($theme-color, 15%);
+  color: var(--theme-color);
+  transition: color 0.3s ease;
   &:hover {
     text-decoration: underline;
-    color: darken($theme-color, 30%);
+    color: var(--theme-color);
+    filter: brightness(0.8);
   }
   &:focus {
     text-decoration: none;
@@ -36,27 +39,30 @@ p {
 .wrapper {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
-  background: $theme-color;
+  background: var(--theme-color);
   max-width: 1000px;
   margin: 0 auto;
   position: relative;
   @include box-shadow(0px 2px 4px rgba(0, 0, 0, 0.1));
+  transition: background-color 0.3s ease;
 }
 
 .sidebar-wrapper {
   grid-column: span 3;
   order: $sidebar-order;
-  background: $theme-color;
+  background: var(--theme-color);
   color: #fff;
+  transition: background-color 0.3s ease;
   a {
     color: #fff;
+    transition: color 0.3s ease;
   }
   .profile-container {
     padding: 30px;
-    //background: darken($theme-color, 10%);
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--sidebar-overlay);
     text-align: center;
     color: #fff;
+    transition: background-color 0.3s ease;
   }
   .name {
     font-size: 32px;
@@ -162,16 +168,18 @@ p {
 .main-wrapper {
   grid-column: span 7;
   order: $resume-order;
-  background: #fff;
+  background: var(--background);
   padding: 60px;
+  transition: background-color 0.3s ease;
   .section-title {
     text-transform: uppercase;
     font-size: 20px;
     font-weight: 500;
-    color: darken($theme-color, 15%);
+    color: var(--theme-color);
     position: relative;
     margin-top: 0;
     margin-bottom: 20px;
+    transition: color 0.3s ease;
   }
   .section {
     margin-bottom: 60px;
@@ -193,26 +201,29 @@ p {
   .job-title,
   .degree,
   .cert-title{
-    color: $text-color;
+    color: var(--text-color);
     font-size: 16px;
     margin-top: 0;
     margin-bottom: 0;
     font-weight: 500;
     flex: 75%;
+    transition: color 0.3s ease;
   }
   .time,
   .cert-url {
     position: absolute;
     right: 0;
     top: 0;
-    color: $text-grey;
+    color: var(--text-grey);
     flex: 25%;
+    transition: color 0.3s ease;
   }
   .company,
   .university,
   .cert-org {
     margin-bottom: 10px;
-    color: $text-grey;
+    color: var(--text-grey);
+    transition: color 0.3s ease;
   }
 
   .project-title {
@@ -220,7 +231,8 @@ p {
     font-weight: 400;
     margin-top: 0;
     margin-bottom: 5px;
-    color: darken($theme-color, 15%);
+    color: var(--theme-color);
+    transition: color 0.3s ease;
   }
   .projects-section {
     .intro {
@@ -234,13 +246,15 @@ p {
   .publication-title {
     font-size: 16px;
     font-weight: 400;
-    color: $text-color;
+    color: var(--text-color);
     margin-bottom: 1px;
+    transition: color 0.3s ease;
   }
   .publication-authors {
     font-style: italic;
-    color: $text-grey;
+    color: var(--text-grey);
     margin-bottom: 1px;
+    transition: color 0.3s ease;
   }
   .publications-section {
     .intro {
@@ -264,11 +278,13 @@ p {
   }
   .level-bar {
     height: 12px;
-    background: $smoky-white;
+    background: var(--smoky-white);
+    transition: background-color 0.3s ease;
   }
   .level-bar-inner {
     height: 12px;
-    background: lighten($theme-color, 15%);
+    background: var(--theme-color);
+    transition: background-color 0.3s ease;
   }
 }
 
@@ -276,12 +292,14 @@ p {
   padding-top: 30px;
   .copyright {
     line-height: 1.6;
-    color: $text-color-secondary;
+    color: var(--text-color-secondary);
     font-size: 13px;
+    transition: color 0.3s ease;
   }
 
   .fa-heart {
-    color: $heart;
+    color: var(--heart);
+    transition: color 0.3s ease;
   }
 }
 

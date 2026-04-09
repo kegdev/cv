@@ -160,13 +160,28 @@ async function generatePDF() {
     console.log('🎨 Injecting comprehensive PDF styles with ceramic theme and layout fixes...');
     await page.addStyleTag({
       content: `
-        /* Ceramic theme variables */
+        /* Force light theme for PDF generation */
         :root {
-          --theme-color: #6d6e8a;
-          --text-color: #3F4650;
-          --text-color-secondary: #545E6C;
-          --text-grey: #97AAC3;
-          --smoky-white: #f5f5f5;
+          --theme-color: #6d6e8a !important;
+          --text-color: #3F4650 !important;
+          --text-color-secondary: #545E6C !important;
+          --text-grey: #97AAC3 !important;
+          --smoky-white: #f5f5f5 !important;
+          --background: #ffffff !important;
+          --sidebar-overlay: rgba(0, 0, 0, 0.2) !important;
+        }
+        
+        /* Override any dark mode attributes for PDF */
+        html[data-theme="dark"],
+        html[data-theme="light"],
+        html {
+          --theme-color: #6d6e8a !important;
+          --text-color: #3F4650 !important;
+          --text-color-secondary: #545E6C !important;
+          --text-grey: #97AAC3 !important;
+          --smoky-white: #f5f5f5 !important;
+          --background: #ffffff !important;
+          --sidebar-overlay: rgba(0, 0, 0, 0.2) !important;
         }
         
         /* Base styles */
