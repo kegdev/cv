@@ -116,6 +116,26 @@ experiences:
 certifications:
       title: Certifications
       list:
+        - name: iPaaS.com Certified Solutions Architect
+          start: 2026
+          end: 
+          organization: iPaaS.com
+          credentialname: Certified Solutions Architect
+        - name: iPaaS.com Certified Implementer
+          start: 2026
+          end: 
+          organization: iPaaS.com
+          credentialname: Certified Implementer
+        - name: iPaaS.com Certified Sales Specialist
+          start: 2026
+          end: 
+          organization: iPaaS.com
+          credentialname: Certified Specialist
+        - name: iPaaS.com Certified Administrator
+          start: 2026
+          end: 
+          organization: iPaaS.com
+          credentialname: Certified Administrator
         - name: Znode Product Certification
           start: 2025
           end: 
