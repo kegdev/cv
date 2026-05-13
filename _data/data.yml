@@ -116,6 +116,15 @@ experiences:
 certifications:
       title: Certifications
       list:
+        - name: Developer Essentials
+          start: 2026
+          end: 2027
+          organization: BigCommerce
+          credentialid: C1508
+          credentialurl: https://www.bigcommerce.com/resources/university/technical/
+          credentialname: BigCommerce Developer Essentials Certification
+          details: |
+            Achieved renewed BigDev Developer-centric certification
         - name: iPaaS.com Certified Solutions Architect
           start: 2026
           end: 
@@ -155,19 +164,19 @@ certifications:
             Achieved and maintain the Adobe Certified Expert version of the Front-End Developer certification.
         - name: BigCommerce App Builder Certification
           start: 2023
-          end: 
+          end: 2026
           organization: BigCommerce
           credentialid: C706
-          credentialurl: https://www.bigcommerce.com/blog/bigdev-certification/
+          credentialurl: https://www.bigcommerce.com/resources/university/technical/
           credentialname: BigCommerce App Builder Certification
           details: |
             Achieved the BigCommerce App Builder Certification.
         - name: BigCommerce BigDev Certification
           start: 2023
-          end: 
+          end: 2026
           organization: BigCommerce
           credentialid: C709
-          credentialurl: https://www.bigcommerce.com/blog/bigdev-certification/
+          credentialurl: https://www.bigcommerce.com/resources/university/technical/
           credentialname: BigCommerce BigDev Certification
           details: |
             Achieved the BigCommerce BigDev Certification.
