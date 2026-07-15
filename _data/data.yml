@@ -116,6 +116,24 @@ experiences:
 certifications:
       title: Certifications
       list:
+        - name: Composable Developer
+          start: 2026
+          end: 2027
+          organization: BigCommerce
+          credentialid: C1580
+          credentialurl: https://www.bigcommerce.com/resources/university/technical/
+          credentialname: BigCommerce Composable Developer Certification
+          details: |
+            Achieved Composable Developer certification
+        - name: Stencil Developer
+          start: 2026
+          end: 2027
+          organization: BigCommerce
+          credentialid: C1514
+          credentialurl: https://www.bigcommerce.com/resources/university/technical/
+          credentialname: BigCommerce Stencil Developer Certification
+          details: |
+            Achieved Stencil Developer certification
         - name: Developer Essentials
           start: 2026
           end: 2027
@@ -124,7 +142,7 @@ certifications:
           credentialurl: https://www.bigcommerce.com/resources/university/technical/
           credentialname: BigCommerce Developer Essentials Certification
           details: |
-            Achieved renewed BigDev Developer-centric certification
+            Achieved Developer Essentials certification
         - name: iPaaS.com Certified Solutions Architect
           start: 2026
           end: 
