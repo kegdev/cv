@@ -283,8 +283,8 @@ skills:
       - name: Adobe Commerce (Magento 2.x)
         level: 80%
 
-      - name: BigCommerce (Stencil, Middleware)
-        level: 70%
+      - name: BigCommerce (Stencil, Middleware, Catalyst)
+        level: 75%
 
       - name: Znode Commerce Platform
         level: 50%
