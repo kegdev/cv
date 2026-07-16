@@ -50,17 +50,7 @@
     }
   }
 
-  /* Better print styles for dark mode */
-  @media print {
-    * {
-      background: white !important;
-      color: black !important;
-    }
-    
-    .wrapper {
-      box-shadow: none !important;
-    }
-  }
+  /* Better print styles for dark mode — handled in _print.scss */
 }
 
 /* Smooth transitions for all theme changes */

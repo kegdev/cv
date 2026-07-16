@@ -1,45 +1,611 @@
-@media print
-   {
-    @page {
-        size: A4;
-    }
-    body {
-       font-size: 12pt;
+// =====================================================================
+// Print Stylesheet — cv.keg.dev
+// Targets @media print for browser PDF export and physical printing.
+// Designed for US Letter (also works on A4) at ~10pt base font.
+// Two-column layout: narrow sidebar (30%) + wide main content (70%).
+// =====================================================================
+
+@media print {
+
+  // ------------------------------------------------------------------
+  // 1. Page Setup
+  // ------------------------------------------------------------------
+
+  @page {
+    size: letter portrait;
+    margin: 0.35in 0 0 0;
+  }
+
+  @page :first {
+    margin: 0;
+  }
+
+  // ------------------------------------------------------------------
+  // 2. Global Resets & Color Strategy
+  //    Override CSS custom properties at root level so all var()
+  //    references resolve to print-safe values regardless of theme.
+  // ------------------------------------------------------------------
+
+  :root,
+  :root[data-theme="dark"],
+  :root[data-theme="light"] {
+    --theme-color: #2c2d3e;
+    --text-color: #222;
+    --text-color-secondary: #444;
+    --text-grey: #777;
+    --divider: #e8e8e8;
+    --smoky-white: #f5f5f5;
+    --background: #ffffff;
+    --sidebar-overlay: rgba(0, 0, 0, 0.15);
+  }
+
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    transition: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  html,
+  body {
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    font-size: 10pt !important;
+    font-family: "Roboto", Arial, sans-serif !important;
+    color: #333 !important;
+  }
+
+  // ------------------------------------------------------------------
+  // 3. Prevent orphaned headings at bottom of page
+  // ------------------------------------------------------------------
+
+  h1, h2, h3, h4, h5, h6 {
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  // ------------------------------------------------------------------
+  // 4. Main wrapper — two-column grid using table-like display
+  //    CSS Grid can be unreliable across print renderers; using
+  //    display: flex gives more consistent column behavior.
+  // ------------------------------------------------------------------
+
+  .wrapper {
+    display: flex !important;
+    flex-direction: row !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #2c2d3e !important;
+    box-shadow: none !important;
+  }
+
+  // ------------------------------------------------------------------
+  // 5. Sidebar — narrow left column, brand color background
+  //    Note: rules use `html body` prefix to out-specificity Bootstrap's
+  //    @media print `* { color: #000 !important }` blanket reset.
+  // ------------------------------------------------------------------
+
+  html body .sidebar-wrapper {
+    width: 30% !important;
+    min-width: 30% !important;
+    max-width: 30% !important;
+    flex-shrink: 0 !important;
+    background: #2c2d3e !important;
+    color: #fff !important;
+    padding: 0 !important;
+    position: static !important;
+    float: none !important;
+    display: block !important;
+
+    a,
+    li,
+    h1, h2, h3, h4, h5,
+    p, span, div,
+    .fas, .fab, .far {
+      color: #fff !important;
     }
 
-    img.avatar {
-        filter: grayscale(1);
-        -webkit-filter: greyscale(1);
+    a {
+      text-decoration: none !important;
     }
-   .main-wrapper .time {
-       float: right;
-        color: black !important;
-        -webkit-print-color-adjust: exact; 
-   }
+
+    // Profile area
+    .profile-container {
+      padding: 20pt 14pt 14pt !important;
+      background: rgba(0, 0, 0, 0.15) !important;
+      text-align: center !important;
+    }
+
+    // Profile image — keep it, scale it down
+    .avatar {
+      width: 70pt !important;
+      height: 70pt !important;
+      max-width: 70pt !important;
+      border-radius: 50% !important;
+      margin: 0 auto 8pt auto !important;
+      display: block !important;
+      object-fit: cover !important;
+    }
+
+    .name {
+      font-size: 14pt !important;
+      font-weight: 900 !important;
+      color: #fff !important;
+      margin: 0 0 4pt !important;
+      line-height: 1.2 !important;
+    }
+
+    .tagline {
+      font-size: 8.5pt !important;
+      color: #fff !important;
+      margin: 0 !important;
+      line-height: 1.3 !important;
+    }
+
+    // Each sidebar section block
+    .container-block {
+      padding: 10pt 12pt !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+    }
+
+    .container-block-title {
+      font-size: 7.5pt !important;
+      font-weight: 700 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.05em !important;
+      color: #fff !important;
+      margin: 0 0 6pt !important;
+    }
+
+    // Contact list
+    .contact-list {
+      list-style: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+
+      li {
+        font-size: 8pt !important;
+        color: #fff !important;
+        margin-bottom: 4pt !important;
+        line-height: 1.4 !important;
+
+        &:last-child {
+          margin-bottom: 0 !important;
+        }
+
+        // Hide the PDF download link — no point in print
+        &.pdf {
+          display: none !important;
+        }
+      }
+
+      .fas, .fab, .far {
+        width: 12pt !important;
+        font-size: 9pt !important;
+        margin-right: 4pt !important;
+        color: #fff !important;
+        vertical-align: middle !important;
+      }
+
+      a {
+        color: #fff !important;
+        text-decoration: none !important;
+
+        &::after {
+          content: none !important;
+        }
+      }
+    }
+
+    // Education in sidebar
+    .education-container {
+      .item {
+        margin-bottom: 8pt !important;
+
+        &:last-child {
+          margin-bottom: 0 !important;
+        }
+      }
+
+      .degree {
+        font-size: 8.5pt !important;
+        font-weight: 600 !important;
+        color: #fff !important;
+        margin: 0 0 2pt !important;
+      }
+
+      .meta {
+        font-size: 8pt !important;
+        color: #fff !important;
+        margin: 0 0 1pt !important;
+      }
+
+      .time {
+        font-size: 7.5pt !important;
+        color: #fff !important;
+        margin: 0 !important;
+      }
+    }
+
+    // Languages
+    .languages-container {
+      .interests-list {
+        list-style: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+
+        li {
+          font-size: 8.5pt !important;
+          color: #fff !important;
+          margin-bottom: 3pt !important;
+        }
+      }
+
+      .lang-desc {
+        font-size: 7.5pt !important;
+        color: #fff !important;
+      }
+    }
+
+    // Hide "About Theme" block
+    .remove-container {
+      display: none !important;
+    }
+
+    // Hide interests
+    .interests-container {
+      display: none !important;
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // 6. Main content — wider right column, white background
+  // ------------------------------------------------------------------
+
+  .main-wrapper {
+    width: 70% !important;
+    flex: 1 !important;
+    background: #fff !important;
+    padding: 20pt 20pt 20pt 20pt !important;
+    color: #333 !important;
+    display: block !important;
+
+    // Section headings
+    .section-title {
+      font-size: 10.5pt !important;
+      font-weight: 700 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.05em !important;
+      color: #2c2d3e !important;
+      margin: 0 0 8pt !important;
+      padding-bottom: 3pt !important;
+      border-bottom: 1.5pt solid #2c2d3e !important;
+
+      // FA icon stack next to title
+      .fa-stack {
+        font-size: 0.75em !important;
+        margin-right: 4pt !important;
+        vertical-align: middle !important;
+      }
+
+      .fa-circle {
+        color: #2c2d3e !important;
+      }
+
+      // White icon on top of the filled circle — must survive dark mode reset
+      .fa-inverse,
+      .fa-inverse::before,
+      .fa-inverse::after {
+        color: #fff !important;
+      }
+    }
+
+    // Sections — tighten spacing vs. 60px web default
+    // Do NOT use break-inside: avoid here — it forces each section
+    // onto its own page if it doesn't fit. Let sections flow freely.
+    .section {
+      margin-bottom: 14pt !important;
+
+      &:last-child {
+        margin-bottom: 0 !important;
+      }
+    }
+
+    // Summary / career profile
+    .summary-section {
+      .summary {
+        font-size: 9pt !important;
+        line-height: 1.5 !important;
+        color: #444 !important;
+
+        p {
+          margin: 0 0 4pt !important;
+
+          &:last-child {
+            margin-bottom: 0 !important;
+          }
+        }
+      }
+    }
+    // Experience items — allow breaks, just ensure spacing when they do
+    .experiences-section {
+      .item {
+        margin-bottom: 10pt !important;
+        margin-top: 6pt !important;
+
+        &:first-child {
+          margin-top: 0 !important;
+        }
+
+        &:last-child {
+          margin-bottom: 0 !important;
+        }
+      }
+    }
+
+    // Education and cert items are smaller — keep them together
+    .educations-section,
+    .certifications-section {
+      .item {
+        margin-bottom: 8pt !important;
+        margin-top: 4pt !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+
+        &:first-child {
+          margin-top: 0 !important;
+        }
+
+        &:last-child {
+          margin-bottom: 0 !important;
+        }
+      }
+    }
+
+    // Add top padding to sections that break to a new page
+    .experiences-section,
+    .educations-section,
+    .certifications-section {
+      padding-top: 4pt !important;
+    }
+
+    // Job/cert title row
+    .upper-row,
+    .second-upper-row {
+      display: flex !important;
+      position: relative !important;
+      margin-bottom: 1pt !important;
+      overflow: visible !important;
+    }
+
+    .job-title,
+    .degree,
+    .cert-title {
+      font-size: 9.5pt !important;
+      font-weight: 600 !important;
+      color: #222 !important;
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      margin: 0 !important;
+      padding-right: 6pt !important;
+      word-break: normal !important;
+      overflow-wrap: normal !important;
+    }
+
+    .time {
+      position: static !important;
+      flex: 0 0 auto !important;
+      margin-left: auto !important;
+      font-size: 7pt !important;
+      color: #888 !important;
+      white-space: nowrap !important;
+      text-align: right !important;
+      max-width: 65pt !important;
+    }
+
+    .company,
+    .university,
+    .cert-org {
+      font-size: 8.5pt !important;
+      color: #777 !important;
+      margin: 0 0 3pt !important;
+    }
+
+    .cert-url {
+      position: static !important;
+      font-size: 8pt !important;
+      color: #2c2d3e !important;
+      flex-shrink: 0 !important;
+      text-align: right !important;
+
+      a {
+        color: #2c2d3e !important;
+        text-decoration: none !important;
+      }
+    }
+
+    .details {
+      font-size: 8.5pt !important;
+      line-height: 1.5 !important;
+      color: #444 !important;
+      margin-top: 3pt !important;
+
+      p {
+        margin: 0 0 3pt !important;
+
+        &:last-child {
+          margin-bottom: 0 !important;
+        }
+      }
+
+      ul, ol {
+        margin: 0 0 3pt 12pt !important;
+        padding: 0 !important;
+      }
+
+      li {
+        margin-bottom: 1pt !important;
+      }
+    }
+
+    // Projects
+    .projects-section {
+      .item {
+        margin-bottom: 5pt !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+      }
+
+      .project-title {
+        font-size: 9pt !important;
+        font-weight: 500 !important;
+        color: #2c2d3e !important;
+
+        a {
+          color: #2c2d3e !important;
+          text-decoration: none !important;
+        }
+      }
+
+      .project-tagline {
+        font-size: 8.5pt !important;
+        color: #555 !important;
+      }
+
+      .intro {
+        font-size: 8.5pt !important;
+        color: #444 !important;
+        margin-bottom: 5pt !important;
+      }
+    }
+
+    // Skills bars
+    .skills-section {
+      .skillset {
+        // 2-column skill grid in print to save vertical space
+        column-count: 2 !important;
+        column-gap: 12pt !important;
+
+        .item {
+          break-inside: avoid !important;
+          page-break-inside: avoid !important;
+          margin-bottom: 6pt !important;
+          overflow: visible !important;
+        }
+
+        .level-title {
+          font-size: 8.5pt !important;
+          color: #333 !important;
+          margin: 0 0 3pt !important;
+          display: block !important;
+          float: none !important;
+          width: auto !important;
+        }
+
+        .level-bar {
+          height: 5pt !important;
+          background: #e8e8e8 !important;
+          display: block !important;
+          float: none !important;
+          width: 100% !important;
+        }
+
+        .level-bar-inner {
+          height: 5pt !important;
+          background: #2c2d3e !important;
+        }
+      }
+    }
+
+    // Publications
+    .publications-section {
+      .item {
+        margin-bottom: 6pt !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+      }
+
+      .publication-title {
+        font-size: 9pt !important;
+        font-weight: 500 !important;
+        color: #333 !important;
+        margin-bottom: 1pt !important;
+      }
+
+      .publication-authors {
+        font-size: 8pt !important;
+        color: #777 !important;
+        font-style: italic !important;
+        margin-bottom: 1pt !important;
+      }
+    }
+
+    // Generic links in main content — suppress underlines
+    a {
+      color: #2c2d3e !important;
+      text-decoration: none !important;
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // 7. Hide web-only elements
+  // ------------------------------------------------------------------
+
+  // PDF download link in sidebar
+  .contact-list li.pdf,
+  // Phone — not useful on a printed resume
+  .contact-list li.phone,
+  // Site footer
+  footer,
+  .footer,
+  // Theme toggle button (if present)
+  .theme-toggle,
+  #theme-toggle,
+  [data-theme-toggle],
+  // Any button or interactive element
+  button,
+  .btn {
+    display: none !important;
+  }
+
+  // Hide cert details and credential URL in print — name, org and date are sufficient
+  .certifications-section .details,
+  .certifications-section .cert-url {
+    display: none !important;
+  }
+
+  // Hide skills section entirely in print
+  .skills-section {
+    display: none !important;
+  }
+
+  // ------------------------------------------------------------------
+  // 8. Dark mode safety net — the CSS variable overrides in section 2
+  //    handle most cases. This just ensures the sidebar background
+  //    and wrapper are explicitly set regardless of theme.
+  // ------------------------------------------------------------------
+
+  :root[data-theme="dark"] {
+    .wrapper {
+      background: #2c2d3e !important;
+      box-shadow: none !important;
+    }
+
     .sidebar-wrapper {
-        position: static;
-        float: right;
-        width: 40%;
-        -webkit-print-color-adjust: exact; 
+      background: #2c2d3e !important;
     }
 
-    .remove-container.container-block {
-       display: none;
+    .main-wrapper {
+      background: #fff !important;
     }
-
-    footer {
-       display: none;
-    }
-
-    .skillset .level-bar-inner {
-       background-color: black !important;
-       -webkit-print-color-adjust: exact; 
-    }
-
-   .fa-inverse,
-   .fa-inverse:after,
-   .fa-inverse:before {
-     color: #ffffff !important;
-   }
+  }
 
 }

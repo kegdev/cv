@@ -57,9 +57,9 @@ sidebar:
 career-profile:
     title: Career Profile
     summary: |
-      Hi Y'all! 👋 I'm an accomplished Development Manager with 18+ years of progressive experience in e-commerce technology leadership. Currently leading the development team at Human Element, specializing in Adobe Commerce, BigCommerce, Znode, and Shopify implementations. Proven track record of scaling from individual contributor to executive leadership, with expertise spanning full-stack development, team management, and strategic technology planning. 
+      I'm an accomplished Development Manager with 18+ years of progressive experience in e-commerce technology leadership. Currently leading the development team at Human Element, specializing in Adobe Commerce, BigCommerce, Znode, and Shopify implementations. Proven track record of scaling from individual contributor to executive leadership, with expertise spanning full-stack development, team management, and strategic technology planning.
       
-      All that said, this allows me to combine hands-on technical excellence with strong leadership capabilities, having successfully managed teams of 2-10 developers across dozens of concurrent projects. Maintains active certifications in multiple e-commerce platforms while driving innovation in development processes, client relations, and technical architecture. Background includes 5+ years in QA, providing a unique perspective on quality-driven development practices.
+      This allows me to combine hands-on technical excellence with strong leadership capabilities, having successfully managed teams of 2-10 developers across dozens of concurrent projects. Maintains active certifications in multiple e-commerce platforms while driving innovation in development processes, client relations, and technical architecture. Background includes 5+ years in QA, providing a unique perspective on quality-driven development practices.
 education:
     title: Education
     info:
@@ -122,27 +122,21 @@ certifications:
           organization: BigCommerce
           credentialid: C1580
           credentialurl: https://www.bigcommerce.com/resources/university/technical/
-          credentialname: BigCommerce Composable Developer Certification
-          details: |
-            Achieved Composable Developer certification
+          credentialname: View Certification
         - name: Stencil Developer
           start: 2026
           end: 2027
           organization: BigCommerce
           credentialid: C1514
           credentialurl: https://www.bigcommerce.com/resources/university/technical/
-          credentialname: BigCommerce Stencil Developer Certification
-          details: |
-            Achieved Stencil Developer certification
+          credentialname: View Certification
         - name: Developer Essentials
           start: 2026
           end: 2027
           organization: BigCommerce
           credentialid: C1508
           credentialurl: https://www.bigcommerce.com/resources/university/technical/
-          credentialname: BigCommerce Developer Essentials Certification
-          details: |
-            Achieved Developer Essentials certification
+          credentialname: View Certification
         - name: iPaaS.com Certified Solutions Architect
           start: 2026
           end: 
@@ -168,36 +162,28 @@ certifications:
           end: 
           organization: Amla Commerce Academy
           credentialurl: https://www.credential.net/1c44e80c-1065-4947-95b9-cf08ec4dbd06
-          credentialname: Znode Product Certification
-          details: |
-            Achieved and maintain the Znode Product Certification.
+          credentialname: View Certification
         - name: Adobe Certified Expert-Adobe Commerce Front-End Developer
           start: 2021
           end: 
           organization: Adobe
           credentialid: yc9dtt5184
           credentialurl: https://www.credly.com/badges/45da28f1-7eb4-4c69-9229-d578d5d60ffb/public_url
-          credentialname: Adobe Certified Expert-Adobe Commerce Front-End Developer
-          details: |
-            Achieved and maintain the Adobe Certified Expert version of the Front-End Developer certification.
+          credentialname: View Certification
         - name: BigCommerce App Builder Certification
           start: 2023
           end: 2026
           organization: BigCommerce
           credentialid: C706
           credentialurl: https://www.bigcommerce.com/resources/university/technical/
-          credentialname: BigCommerce App Builder Certification
-          details: |
-            Achieved the BigCommerce App Builder Certification.
+          credentialname: View Certification
         - name: BigCommerce BigDev Certification
           start: 2023
           end: 2026
           organization: BigCommerce
           credentialid: C709
           credentialurl: https://www.bigcommerce.com/resources/university/technical/
-          credentialname: BigCommerce BigDev Certification
-          details: |
-            Achieved the BigCommerce BigDev Certification.
+          credentialname: View Certification
 
 # projects:
 #     title: Projects
