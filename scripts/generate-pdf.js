@@ -51,11 +51,12 @@ async function generatePDF() {
     page = await context.newPage();
     console.log('✅ Browser ready');
 
-    // Load the Jekyll-built page via file:// protocol
-    const fileUrl = 'file://' + mainPagePath;
-    console.log('🔗 Loading:', fileUrl);
+    // Load the Jekyll-built page via local server
+    // file:// protocol blocks stylesheet loading in headless Chromium
+    const pageUrl = 'http://localhost:4000';
+    console.log('🔗 Loading:', pageUrl);
 
-    await page.goto(fileUrl, {
+    await page.goto(pageUrl, {
       waitUntil: 'networkidle',
       timeout: 60000
     });

@@ -94,10 +94,29 @@ jobs:
         npx playwright install chromium --with-deps
         
         echo "✅ Dependencies installed successfully"
+
+        # Start Jekyll server in background so Playwright can load assets
+        echo "🌐 Starting Jekyll server..."
+        bundle exec jekyll serve --no-watch --skip-initial-build &
+        JEKYLL_PID=$!
+
+        # Wait for server to be ready
+        echo "⏳ Waiting for Jekyll server..."
+        for i in $(seq 1 30); do
+          if curl -s http://localhost:4000 > /dev/null; then
+            echo "✅ Jekyll server ready"
+            break
+          fi
+          sleep 1
+        done
         
         # Run PDF generation script
         echo "📝 Running PDF generation script..."
         npm run generate-pdf
+
+        # Stop Jekyll server
+        kill $JEKYLL_PID 2>/dev/null || true
+        echo "✅ Jekyll server stopped"
         
     - name: Verify PDF was created
       run: |
