@@ -98,9 +98,8 @@ jobs:
         # Serve the built _site directory over HTTP so Playwright can load all assets
         # Use Python's built-in HTTP server — always available on Ubuntu runners
         echo "🌐 Starting static file server..."
-        cd _site && python3 -m http.server 4000 &
+        python3 -m http.server 4000 --directory _site &
         SERVER_PID=$!
-        cd ..
 
         # Wait for server to be ready
         echo "⏳ Waiting for server..."
